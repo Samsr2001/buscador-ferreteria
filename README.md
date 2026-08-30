@@ -13,6 +13,30 @@ Desarrollar un sistema de búsqueda inteligente orientado a optimizar la gestió
 
 > 🚧 **En construcción:** Acá definiremos el stack tecnológico (frontend, backend, base de datos) aplicando los principios de una buena arquitectura (Clean/Hexagonal).
 
+## 📋 Matriz de Requisitos y Criterios de Aceptación
+
+### 1. Requerimientos Funcionales
+* **RF01:** El sistema debe permitir el ingreso de texto en lenguaje coloquial o descripciones imprecisas a través de una barra de búsqueda.
+* **RF02:** El sistema debe integrar una IA capaz de procesar el texto y relacionarlo con los términos técnicos del inventario.
+* **RF03:** El sistema debe mostrar el código exacto, una imagen del producto y sus posibles sustitutos.
+* **RF04:** El sistema debe manejar casos vacíos o de error con mensajes claros.
+
+### 2. Requerimientos No Funcionales
+* **RNF01 (Frontend):** La interfaz debe estar desarrollada en Next.js y Tailwind CSS.
+* **RNF02 (Backend & BD):** La lógica debe implementarse en Node.js o Supabase, con base de datos en PostgreSQL.
+* **RNF03 (Automatización y Despliegue):** Debe incluir automatización con n8n y estar desplegado en Vercel.
+* **RNF04 (Repositorio):** El proyecto debe gestionarse en GitHub de forma organizada con su respectivo README.
+
+### 3. Historias de Usuario (Formato Given-When-Then)
+* **HU01: Búsqueda exitosa con lenguaje informal**
+  * **Dado (Given):** Que un usuario desconoce el nombre técnico de un repuesto.
+  * **Cuando (When):** Ingresa una descripción coloquial (ej. "la piecita de plástico que une el tubo de agua").
+  * **Entonces (Then):** El sistema traduce la frase, consulta la base de datos y muestra el código exacto, la foto y marcas sustitutas de inmediato.
+* **HU02: Búsqueda sin stock exacto**
+  * **Dado (Given):** Que el usuario busca un término válido pero no hay stock exacto.
+  * **Cuando (When):** El sistema procesa la información de forma automática.
+  * **Entonces (Then):** El sistema alerta sobre la falta de stock y genera una salida útil mostrando inmediatamente los sustitutos viables.
+
 ## 📚 Bibliografía de Referencia
 
 El desarrollo de este sistema se apoya en los estándares y principios estudiados en:
@@ -22,6 +46,6 @@ El desarrollo de este sistema se apoya en los estándares y principios estudiado
 ## 🚀 Próximos Pasos
 
 - [x] Inicializar el repositorio y conectarlo a GitHub.
-- [ ] Definir los Requerimientos Funcionales y No Funcionales.
+- [x] Definir los Requerimientos Funcionales y No Funcionales.
 - [ ] Elaborar los diagramas de Casos de Uso.
 - [ ] Configurar el entorno de desarrollo base.

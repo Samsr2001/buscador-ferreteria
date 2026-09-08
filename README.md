@@ -1,6 +1,6 @@
 # 🛠️ Proyecto 21: Buscador Inteligente para Ferreterías
 
-![Estado del Proyecto](https://img.shields.io/badge/Estado-Fase_de_Concepción-blue)
+![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo_(Sprint_2)-blue)
 ![Materia](https://img.shields.io/badge/Materia-Ingeniería_de_Software-brightgreen)
 
 Bienvenido al repositorio del **Buscador Inteligente para Ferreterías**. Este proyecto académico corresponde al Proyecto N° 21 de la materia de Ingeniería de Software.
@@ -11,7 +11,10 @@ Desarrollar un sistema de búsqueda inteligente orientado a optimizar la gestió
 
 ## 🏗️ Tecnologías y Arquitectura
 
-> 🚧 **En construcción:** Acá definiremos el stack tecnológico (frontend, backend, base de datos) aplicando los principios de una buena arquitectura (Clean/Hexagonal).
+El proyecto se está construyendo bajo los principios de **Clean Architecture** (separación en capas de dominio, aplicación e infraestructura).
+- **Backend:** Node.js con Express
+- **Base de Datos:** PostgreSQL a través de Supabase
+- **Documentación API:** Swagger (OpenAPI)
 
 ## 📋 Matriz de Requisitos y Criterios de Aceptación
 
@@ -47,5 +50,7 @@ El desarrollo de este sistema se apoya en los estándares y principios estudiado
 
 - [x] Inicializar el repositorio y conectarlo a GitHub.
 - [x] Definir los Requerimientos Funcionales y No Funcionales.
+- [x] Configurar el entorno de desarrollo base (Node.js, Express, Supabase).
+- [x] Construir arquitectura base (Sprint 2).
+- [ ] Integrar modelo de IA en el endpoint de búsqueda (Sprint 3).
 - [ ] Elaborar los diagramas de Casos de Uso.
-- [ ] Configurar el entorno de desarrollo base.

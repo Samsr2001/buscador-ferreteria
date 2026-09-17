@@ -10,6 +10,15 @@ export default function Home() {
   const [isCatalogMode, setIsCatalogMode] = useState(false);
   const [showSucursales, setShowSucursales] = useState(false);
   const [filtroCategoria, setFiltroCategoria] = useState('Todas');
+  const [dropdownAbierto, setDropdownAbierto] = useState(false);
+
+  const categoriasMenu = [
+    { id: 'Todas', nombre: 'Todas las Categorías' },
+    { id: 'Herramientas', nombre: 'Herramientas' },
+    { id: 'Materiales', nombre: 'Materiales e Insumos' },
+    { id: 'Plomeria', nombre: 'Plomería' },
+    { id: 'Tornilleria', nombre: 'Tornillería' }
+  ];
 
   const buscarProductos = async (termino: string) => {
     const trimmed = termino.trim();
@@ -169,20 +178,37 @@ export default function Home() {
                   <p className="text-slate-500 mt-1">Explora el stock por categorias.</p>
                 </div>
                 <div className="relative">
-                  <select 
-                    value={filtroCategoria}
-                    onChange={(e) => fetchCatalogo(e.target.value)}
-                    className="block w-full sm:w-64 pl-4 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-xl bg-slate-50 text-slate-700 appearance-none font-medium cursor-pointer shadow-sm"
+                  <button
+                    onClick={() => setDropdownAbierto(!dropdownAbierto)}
+                    onBlur={() => setTimeout(() => setDropdownAbierto(false), 200)}
+                    className="flex items-center justify-between w-full sm:w-64 px-4 py-3 text-base border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 sm:text-sm rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-medium cursor-pointer shadow-sm transition-all duration-200"
                   >
-                    <option value="Todas">Todas las Categorias</option>
-                    <option value="Herramientas">Herramientas</option>
-                    <option value="Materiales">Materiales e Insumos</option>
-                    <option value="Plomeria">Plomeria</option>
-                    <option value="Tornilleria">Tornilleria</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                  </div>
+                    <span>{categoriasMenu.find(c => c.id === filtroCategoria)?.nombre || 'Todas las Categorías'}</span>
+                    <svg className={`h-5 w-5 text-slate-400 transition-transform duration-200 ${dropdownAbierto ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  {dropdownAbierto && (
+                    <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                      {categoriasMenu.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => {
+                            fetchCatalogo(cat.id);
+                            setDropdownAbierto(false);
+                          }}
+                          className={`block w-full text-left px-4 py-3 text-sm transition-colors duration-150 ${
+                            filtroCategoria === cat.id 
+                              ? 'bg-orange-50 text-orange-700 font-semibold' 
+                              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                          }`}
+                        >
+                          {cat.nombre}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (

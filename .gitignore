@@ -6,3 +6,15 @@ coverage/
 dist/
 build/
 .gemini/
+doc contexto/
+.engram/
+*.pem
+
+# Archivos temporales del MVP
+*.sql
+*.py
+*workflow*.json
+check_webhook.json
+pegar_en_n8n.json
+creds.json
+avance.txt

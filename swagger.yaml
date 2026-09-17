@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: API Buscador Inteligente para Ferreterías
+  title: API Buscador Inteligente para FerreterÃ­as
   version: 1.0.0
-  description: API RESTful para el procesamiento y búsqueda de productos de ferretería con IA.
+  description: API RESTful para el procesamiento y bÃºsqueda de productos de ferreterÃ­a con IA
 servers:
   - url: http://localhost:3000
 paths:
@@ -22,7 +22,7 @@ paths:
                   example: 'tornillo grande para madera'
       responses:
         '200':
-          description: Resultados de búsqueda exitosos
+          description: Resultados de bÃºsqueda exitosa
           content:
             application/json:
               schema:

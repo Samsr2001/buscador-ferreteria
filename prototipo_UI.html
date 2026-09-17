@@ -3,144 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FerreBuscador Inteligente — Prototipo UI</title>
+  <title>FerreBuscador Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] }
+          fontFamily: { sans: ['Outfit', 'sans-serif'] },
+          colors: {
+            ferre: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              900: '#7c2d12',
+            }
+          }
         }
       }
     }
   </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(229, 231, 235, 1);
+    }
+  </style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800 min-h-screen">
+<body class="bg-gradient-to-br from-gray-50 to-gray-200 font-sans text-gray-800 min-h-screen flex flex-col">
 
-  <!-- ========== SECCIÓN 1: HERO / BUSCADOR ========== -->
-  <section class="flex flex-col items-center justify-center pt-24 pb-16 px-4">
-    <!-- Logo / Título -->
-    <h1 class="text-4xl md:text-5xl font-bold text-center mb-2">
-      <span class="text-orange-500">Ferre</span><span class="text-gray-700">Buscador</span>
+  <!-- Navigation Bar -->
+  <nav class="w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm fixed top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-ferre-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
+          </svg>
+          <span class="font-bold text-xl tracking-tight text-gray-900">Ferre<span class="text-ferre-600">Buscador</span></span>
+        </div>
+        <div class="hidden sm:flex space-x-8">
+          <a href="#" class="text-gray-900 font-medium hover:text-ferre-600 transition-colors">Inicio</a>
+          <a href="#" class="text-gray-500 font-medium hover:text-ferre-600 transition-colors">Catálogo</a>
+          <a href="#" class="text-gray-500 font-medium hover:text-ferre-600 transition-colors">Sucursales</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header / Hero -->
+  <header class="w-full pt-32 pb-10 px-4 flex flex-col items-center justify-center">
+    <div class="mb-4 p-3 bg-ferre-100 rounded-2xl shadow-sm">
+      <svg class="w-10 h-10 text-ferre-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
+      </svg>
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold text-center mb-4 tracking-tight text-gray-900">
+      Ferre<span class="text-ferre-600">Buscador</span>
     </h1>
-    <p class="text-sm text-gray-400 mb-10 tracking-wide">Inteligente</p>
+    <p class="text-base text-gray-500 mb-8 font-light tracking-wide text-center max-w-lg">
+      Describí lo que necesitás con tus propias palabras y nuestra IA encontrará el repuesto exacto en segundos.
+    </p>
 
     <!-- Barra de búsqueda -->
-    <div class="w-full max-w-2xl">
-      <div class="flex items-center bg-white border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow px-5 py-3">
-        <!-- Ícono lupa -->
-        <svg class="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="w-full max-w-3xl relative group">
+      <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+        <svg class="w-6 h-6 text-gray-400 group-focus-within:text-ferre-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
-        <input
-          type="text"
-          placeholder="Busca tu repuesto, ej: la piecita de plástico que une el tubo..."
-          class="w-full text-base outline-none bg-transparent placeholder-gray-400"
-        >
-        <!-- Ícono micrófono -->
-        <svg class="w-5 h-5 text-orange-400 ml-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zm-5 9a1 1 0 01-1-1v-2h2v2a1 1 0 01-1 1z"/>
+      </div>
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Ej: la piecita de plástico que une los tubos de agua..."
+        class="w-full pl-14 pr-36 py-5 text-lg bg-white border-2 border-transparent rounded-2xl shadow-lg outline-none focus:border-ferre-500 focus:ring-4 focus:ring-ferre-100 transition-all placeholder-gray-300"
+      >
+      <div class="absolute inset-y-0 right-2 flex items-center">
+        <button id="btnBuscarIA" class="bg-ferre-600 hover:bg-ferre-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
+          <svg id="spinner" class="animate-spin -ml-1 h-5 w-5 text-white hidden" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span id="btnText">Buscar</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Sugerencias -->
+    <div class="mt-6 flex flex-wrap gap-2 justify-center max-w-2xl">
+      <span class="text-sm text-gray-400 font-medium mr-2 mt-1">Sugerencias:</span>
+      <button class="sugerencia-btn bg-white border border-gray-200 text-gray-600 hover:border-ferre-500 hover:text-ferre-600 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm">un clavo</button>
+      <button class="sugerencia-btn bg-white border border-gray-200 text-gray-600 hover:border-ferre-500 hover:text-ferre-600 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm">pegamento fuerte</button>
+      <button class="sugerencia-btn bg-white border border-gray-200 text-gray-600 hover:border-ferre-500 hover:text-ferre-600 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm">coso para enchufar</button>
+    </div>
+  </header>
+
+  <!-- ========== RESULTADOS ========== -->
+  <main class="flex-grow w-full max-w-4xl mx-auto px-4 pb-16">
+    <div id="resultadosContainer" class="space-y-6">
+      <div class="text-center py-20 opacity-40">
+        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
-      </div>
-
-      <!-- Botones debajo del buscador -->
-      <div class="flex justify-center gap-3 mt-5">
-        <button class="bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 px-5 py-2 rounded transition-colors">
-          Buscar producto
-        </button>
-        <button class="bg-orange-50 hover:bg-orange-100 text-sm text-orange-600 px-5 py-2 rounded transition-colors">
-          🤖 Buscar con IA
-        </button>
+        <p class="text-xl text-gray-600 font-light">Tu catálogo inteligente está listo para buscar.</p>
       </div>
     </div>
-  </section>
+  </main>
 
-  <!-- Línea divisora -->
-  <div class="border-t border-gray-200 mx-auto max-w-4xl"></div>
-
-  <!-- ========== SECCIÓN 2: RESULTADOS SIMULADOS ========== -->
-  <section class="max-w-3xl mx-auto px-4 py-10">
-
-    <!-- Aviso de interpretación IA -->
-    <div class="bg-blue-50 border border-blue-200 rounded-lg px-5 py-4 mb-8">
-      <p class="text-sm text-blue-800">
-        🤖 <span class="font-semibold">La IA interpretó tu búsqueda como:</span>
-        <span class="ml-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-medium">Unión PVC 1/2 pulgada</span>
-      </p>
-      <p class="text-xs text-blue-500 mt-1">
-        Búsqueda original: "la piecita de plástico que une el tubo"
-      </p>
-    </div>
-
-    <!-- Info de resultados -->
-    <p class="text-xs text-gray-400 mb-4">Aproximadamente 3 resultados (0.24 segundos)</p>
-
-    <!-- Tarjeta de producto principal -->
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 mb-4">
-      <div class="flex gap-5">
-        <!-- Imagen placeholder -->
-        <div class="w-28 h-28 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-        </div>
-
-        <!-- Info del producto -->
-        <div class="flex-1">
-          <h2 class="text-lg font-semibold text-gray-800 mb-1">Unión PVC 1/2" — Marca A</h2>
-          <p class="text-xs text-gray-400 mb-2">SKU: FER-PVC-UN-050-A</p>
-          <p class="text-sm text-gray-500 mb-3">
-            Unión lisa de PVC de 1/2 pulgada para conexión de tuberías de agua fría. Material resistente a la presión. Norma IRAM.
-          </p>
-          <div class="flex items-center gap-4">
-            <span class="text-xl font-bold text-orange-500">$850</span>
-            <span class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">En stock</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sustitutos sugeridos -->
-      <div class="mt-4 pt-4 border-t border-gray-100">
-        <p class="text-xs text-gray-500 mb-2">🔄 <span class="font-medium">Sustitutos sugeridos:</span></p>
-        <div class="flex gap-2">
-          <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">Marca B — $790</span>
-          <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">Marca C — $920</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de producto secundaria (colapsada) -->
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 mb-4">
-      <div class="flex gap-5">
-        <div class="w-28 h-28 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-        </div>
-        <div class="flex-1">
-          <h2 class="text-lg font-semibold text-gray-800 mb-1">Codo PVC 1/2" x 90° — Marca A</h2>
-          <p class="text-xs text-gray-400 mb-2">SKU: FER-PVC-CO-050-A</p>
-          <p class="text-sm text-gray-500 mb-3">
-            Codo liso de PVC a 90 grados de 1/2 pulgada. Ideal para cambios de dirección en tuberías de agua fría.
-          </p>
-          <div class="flex items-center gap-4">
-            <span class="text-xl font-bold text-orange-500">$650</span>
-            <span class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded">En stock</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-gray-200 bg-gray-100 mt-10">
-    <div class="max-w-3xl mx-auto px-4 py-6 text-center">
-      <p class="text-xs text-gray-400">Proyecto 21 — Buscador Inteligente para Ferreterías · Ingeniería de Software 2026</p>
-    </div>
+  <footer class="w-full text-center py-8 text-gray-400 text-sm">
+    Proyecto 21 — Buscador Inteligente para Ferreterías · Ingeniería de Software 2026
   </footer>
 
+  <script>
+    const btnBuscarIA = document.getElementById('btnBuscarIA');
+    const searchInput = document.getElementById('searchInput');
+    const resultadosContainer = document.getElementById('resultadosContainer');
+    const btnText = document.getElementById('btnText');
+    const spinner = document.getElementById('spinner');
+
+    const API_URL = 'http://localhost:3000/api/buscar';
+
+    btnBuscarIA.addEventListener('click', async () => {
+      const busqueda = searchInput.value.trim();
+      if (!busqueda) return;
+
+      // Animación de carga prolija
+      btnText.textContent = 'Analizando';
+      btnBuscarIA.disabled = true;
+      spinner.classList.remove('hidden');
+      
+      resultadosContainer.innerHTML = `
+        <div class="flex flex-col justify-center items-center py-16">
+          <div class="animate-bounce bg-white p-4 rounded-full mb-4 shadow-sm border border-gray-100">
+            <svg class="w-8 h-8 text-ferre-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+          </div>
+          <p class="text-gray-500 font-medium animate-pulse">Procesando tu búsqueda...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: busqueda })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.detalle || errData.error || 'No se pudo conectar con tu API de Node.js');
+        }
+
+        const data = await response.json();
+        const productos = data.productos;
+        
+        if (Array.isArray(productos) && productos.length > 0) {
+          // Renderizar tarjetas con mejor diseño
+          resultadosContainer.innerHTML = productos.map(producto => `
+            <div class="glass-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 sm:p-8 transform hover:-translate-y-1">
+              <div class="flex flex-col sm:flex-row gap-6">
+                <!-- Imagen placeholder -->
+                <div class="w-full sm:w-32 h-32 bg-gradient-to-br from-ferre-50 to-orange-50 rounded-xl flex items-center justify-center flex-shrink-0 border border-orange-100">
+                  <svg class="w-12 h-12 text-ferre-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                </div>
+                
+                <!-- Datos -->
+                <div class="flex-1">
+                  <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-2xl font-bold text-gray-900">${producto.nombre}</h2>
+                    <span class="text-2xl font-black text-ferre-600 bg-ferre-50 px-3 py-1 rounded-lg border border-ferre-100">$${producto.precio}</span>
+                  </div>
+                  
+                  <div class="flex gap-3 mb-4">
+                    <span class="bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide">SKU: ${producto.sku}</span>
+                    <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide">Marca: ${producto.marca || 'Genérica'}</span>
+                    <span class="${producto.stock > 0 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide">
+                      Stock: ${producto.stock}
+                    </span>
+                  </div>
+                  
+                  <p class="text-gray-600 leading-relaxed text-sm">${producto.descripcion}</p>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          // Estado de no resultados
+          resultadosContainer.innerHTML = `
+            <div class="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
+              <span class="text-4xl mb-4 block">🔍</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">No encontramos resultados</h3>
+              <p class="text-gray-500">Intentá describiendo el repuesto con otras palabras.</p>
+            </div>
+          `;
+        }
+
+      } catch (error) {
+        console.error(error);
+        resultadosContainer.innerHTML = `
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg max-w-2xl mx-auto">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <div class="ml-3"><p class="text-sm text-red-700 font-medium">Error de conexión: ${error.message}</p></div>
+            </div>
+          </div>
+        `;
+      } finally {
+        btnText.textContent = 'Buscar';
+        btnBuscarIA.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') btnBuscarIA.click();
+    });
+
+    // Lógica para los botones de sugerencia
+    document.querySelectorAll('.sugerencia-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        searchInput.value = btn.textContent;
+        btnBuscarIA.click();
+      });
+    });
+  </script>
 </body>
 </html>

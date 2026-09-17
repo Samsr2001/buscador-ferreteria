@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: buscador-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: SUPABASE_URL
+        value: "https://ehiyxqttyzijfwtrzlkb.supabase.co"
+      - key: SUPABASE_KEY
+        sync: false
+      - key: NODE_ENV
+        value: "production"
+      - key: PORT
+        value: "10000"
+

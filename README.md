@@ -1,19 +1,21 @@
 # 🛠️ Proyecto 21: Buscador Inteligente para Ferreterías
 
-![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo_(Sprint_2)-blue)
+![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo_(Sprint_3)-blue)
 ![Materia](https://img.shields.io/badge/Materia-Ingeniería_de_Software-brightgreen)
 
-Bienvenido al repositorio del **Buscador Inteligente para Ferreterías**. Este proyecto académico corresponde al Proyecto N° 21 de la materia de Ingeniería de Software.
+Bienvenido al repositorio del **Buscador Inteligente para Ferreterías**. Este proyecto académico corresponde al Proyecto Nº 21 de la materia de Ingeniería de Software.
 
 ## 🎯 Objetivo del Proyecto
 
 Desarrollar un sistema de búsqueda inteligente orientado a optimizar la gestión de inventario y facilitar la búsqueda rápida de herramientas y materiales en el rubro ferretero. 
 
-## 🏗️ Tecnologías y Arquitectura
+## 🛠️ Tecnologías y Arquitectura
 
-El proyecto se está construyendo bajo los principios de **Clean Architecture** (separación en capas de dominio, aplicación e infraestructura).
-- **Backend:** Node.js con Express
+El proyecto se está construyendo bajo una **Arquitectura de 3 Capas** estricta:
+- **Frontend:** Next.js con Tailwind CSS (Desplegado en Vercel)
+- **Backend:** Node.js con Express (Desplegado en Render)
 - **Base de Datos:** PostgreSQL a través de Supabase
+- **Capa de IA (Orquestación):** n8n conectado a Google Gemini 2.5 Pro
 - **Documentación API:** Swagger (OpenAPI)
 
 ## 📋 Matriz de Requisitos y Criterios de Aceptación
@@ -27,7 +29,7 @@ El proyecto se está construyendo bajo los principios de **Clean Architecture** 
 ### 2. Requerimientos No Funcionales
 * **RNF01 (Frontend):** La interfaz debe estar desarrollada en Next.js y Tailwind CSS.
 * **RNF02 (Backend & BD):** La lógica debe implementarse en Node.js o Supabase, con base de datos en PostgreSQL.
-* **RNF03 (Automatización y Despliegue):** Debe incluir automatización con n8n y estar desplegado en Vercel.
+* **RNF03 (Automatización y Despliegue):** Debe incluir automatización con n8n y estar desplegado en Vercel y Render.
 * **RNF04 (Repositorio):** El proyecto debe gestionarse en GitHub de forma organizada con su respectivo README.
 
 ### 3. Historias de Usuario (Formato Given-When-Then)
@@ -46,11 +48,11 @@ El desarrollo de este sistema se apoya en los estándares y principios estudiado
 - *Ingeniería del Software - 5ta Edición (Roger S. Pressman)*
 - *Planificación INGSW1CIVA_2026*
 
-## 🚀 Próximos Pasos
+## 🚀 Progreso y Próximos Pasos
 
 - [x] Inicializar el repositorio y conectarlo a GitHub.
 - [x] Definir los Requerimientos Funcionales y No Funcionales.
-- [x] Configurar el entorno de desarrollo base (Node.js, Express, Supabase).
-- [x] Construir arquitectura base (Sprint 2).
-- [ ] Integrar modelo de IA en el endpoint de búsqueda (Sprint 3).
-- [ ] Elaborar los diagramas de Casos de Uso.
+- [x] Construir arquitectura base y conexión a BD (Sprint 2).
+- [x] Integrar modelo de IA (Gemini vía n8n) en el endpoint de búsqueda (Sprint 3).
+- [x] Desplegar backend en Render y frontend en Vercel con CI/CD (Sprint 3).
+- [ ] Refinar UI, testing final y elaboración de diagramas de Casos de Uso (Sprint 4).

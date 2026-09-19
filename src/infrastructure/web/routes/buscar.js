@@ -102,7 +102,24 @@ router.post('/', async (req, res) => {
     }
     
     // Si la BD devuelve un objeto vacío, lo convertimos a array
-    const productosEncontrados = Array.isArray(data) ? data : (Object.keys(data).length > 0 ? [data] : []);
+    let productosEncontrados = Array.isArray(data) ? data : (Object.keys(data).length > 0 ? [data] : []);
+    let extrasParaVentaCruzada = [];
+
+    // 💡 POST-PROCESAMIENTO INTELIGENTE (Solución a lo que pediste):
+    // Si el n8n devuelve más de 1 producto, separamos los que coinciden con la palabra principal de los que no.
+    if (productosEncontrados.length > 1) {
+      const palabraClave = terminoNormalizado.split(' ')[0];
+      const exactos = productosEncontrados.filter(p => 
+        p.nombre.toLowerCase().includes(palabraClave) || 
+        p.categoria.toLowerCase().includes(palabraClave)
+      );
+      
+      // Si logramos aislar el producto exacto, mandamos el resto (ej. el Tarugo) a ventas cruzadas
+      if (exactos.length > 0 && exactos.length < productosEncontrados.length) {
+        extrasParaVentaCruzada = productosEncontrados.filter(p => !exactos.includes(p));
+        productosEncontrados = exactos;
+      }
+    }
 
     let sustitutosEncontrados = [];
 
@@ -164,6 +181,20 @@ router.post('/', async (req, res) => {
         console.error("[API] Error buscando complementario:", e.message);
       }
     }
+
+    // Unimos los complementarios de la IA con los "extras" que filtramos arriba del resultado principal
+    complementariosEncontrados = [...extrasParaVentaCruzada, ...complementariosEncontrados];
+    
+    // Y un último filtro por si hay IDs duplicados en la lista final de complementarios
+    const complementariosUnicos = [];
+    const idsVistos = new Set();
+    for (const c of complementariosEncontrados) {
+      if (!idsVistos.has(c.id)) {
+        idsVistos.add(c.id);
+        complementariosUnicos.push(c);
+      }
+    }
+    complementariosEncontrados = complementariosUnicos;
 
     const respuestaFinal = { 
       productos: productosEncontrados,

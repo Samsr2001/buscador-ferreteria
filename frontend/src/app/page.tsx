@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [busqueda, setBusqueda] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
   interface Producto { id: number; nombre: string; precio: number; imagen_url?: string; sku: string; marca?: string; stock: number; descripcion?: string; }
   const [resultados, setResultados] = useState<Producto[] | null>(null);
   const [sustitutos, setSustitutos] = useState<Producto[] | null>(null);
@@ -22,6 +23,12 @@ export default function Home() {
     { id: 'Plomeria', nombre: 'Plomería' },
     { id: 'Tornilleria', nombre: 'Tornillería' }
   ];
+
+  // Aplicar Modo Oscuro al HTML
+  useEffect(() => {
+    if (isDarkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  }, [isDarkMode]);
 
   // Fetch tutorial para los resultados principales
   useEffect(() => {
@@ -104,9 +111,9 @@ export default function Home() {
 
 
   return (
-    <div className="bg-[#f8fafc] font-sans text-slate-800 min-h-screen flex flex-col">
+    <div className="bg-[#f8fafc] dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-200 min-h-screen flex flex-col transition-colors duration-300">
       {/* Navigation Bar */}
-      <nav className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm fixed top-0 z-50">
+      <nav className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm fixed top-0 z-50 transition-colors duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between py-3 sm:h-16 items-center gap-3 sm:gap-0">
             <div className="flex items-center gap-2">
@@ -115,11 +122,18 @@ export default function Home() {
               </svg>
               <span className="font-bold text-xl tracking-tight text-slate-900">Ferre<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">Buscador</span></span>
             </div>
-            <div className="flex space-x-4 sm:space-x-8 text-sm sm:text-base font-medium">
-              <button onClick={() => { setResultados(null); setBusqueda(''); setIsCatalogMode(false); }} className="text-slate-700 hover:text-orange-600 transition-colors">Inicio</button>
-              <button onClick={() => fetchCatalogo()} className="text-slate-700 hover:text-orange-600 transition-colors">Catálogo</button>
-              <button onClick={() => setShowSucursales(true)} className="text-slate-700 hover:text-orange-600 transition-colors">Ferreterías</button>
-            </div>
+              <div className="flex space-x-4 sm:space-x-8 text-sm sm:text-base font-medium items-center">
+                <button onClick={() => { setResultados(null); setBusqueda(''); setIsCatalogMode(false); }} className="text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Inicio</button>
+                <button onClick={() => fetchCatalogo()} className="text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Catálogo</button>
+                <button onClick={() => setShowSucursales(true)} className="text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Ferreterías</button>
+                <button 
+                  onClick={() => setIsDarkMode(!isDarkMode)} 
+                  className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Modo Oscuro"
+                >
+                  {isDarkMode ? '☀️' : '🌙'}
+                </button>
+              </div>
           </div>
         </div>
       </nav>

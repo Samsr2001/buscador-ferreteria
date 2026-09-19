@@ -15,7 +15,7 @@ El proyecto se está construyendo bajo una **Arquitectura de 3 Capas** estricta:
 - **Frontend:** Next.js con Tailwind CSS (Desplegado en Vercel)
 - **Backend:** Node.js con Express (Desplegado en Render)
 - **Base de Datos:** PostgreSQL a través de Supabase
-- **Capa de IA (Orquestación):** n8n conectado a Google Gemini 2.5 Pro
+- **Capa de IA (Orquestación):** n8n conectado a Google Gemini
 - **Documentación API:** Swagger (OpenAPI)
 
 ## 📋 Matriz de Requisitos y Criterios de Aceptación

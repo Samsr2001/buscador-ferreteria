@@ -141,17 +141,18 @@ export default function Home() {
           Buscador Inteligente. Describe el repuesto con tus propias palabras y nuestra IA hará el resto.
         </p>
 
-        {/* Search Bar */}
-        <div className="w-full max-w-3xl relative z-10 hover:shadow-lg transition-shadow duration-300 rounded-2xl">
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+        {/* Search Bar with Glassmorphism */}
+        <div className="w-full max-w-3xl relative z-10 hover:shadow-2xl transition-all duration-500 rounded-2xl group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div className="relative bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl">
+            <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <svg className="w-7 h-7 text-slate-400 group-focus-within:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
             <input
               type="text"
-              className="block w-full pl-14 pr-36 py-5 text-xl bg-white border-2 border-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-sm"
+              className="block w-full pl-16 pr-40 py-5 text-xl bg-transparent border-0 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all"
               placeholder="Ej: la piecita de metal para ajustar tubos..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
@@ -277,12 +278,26 @@ export default function Home() {
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mb-5">
-                  <span className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider">SKU: {producto.sku}</span>
-                  <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider">Marca: {producto.marca || 'Generica'}</span>
-                  <span className={`${producto.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'} text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1`}>
-                    <span className={`w-2 h-2 rounded-full ${producto.stock > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
-                    Stock: {producto.stock}
-                  </span>
+                  <span className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-200">SKU: {producto.sku}</span>
+                  <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider border border-indigo-100">Marca: {producto.marca || 'Genérica'}</span>
+                  
+                  {/* Stock Dinámico Premium */}
+                  {producto.stock > 20 ? (
+                    <span className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-emerald-200 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      Stock Ideal: {producto.stock}
+                    </span>
+                  ) : producto.stock > 0 ? (
+                    <span className="bg-amber-50 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-amber-200 animate-pulse shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                      ¡Últimas {producto.stock}!
+                    </span>
+                  ) : (
+                    <span className="bg-rose-50 text-rose-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-rose-200 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                      Agotado
+                    </span>
+                  )}
                 </div>
                 
                 <p className="text-slate-600 leading-relaxed text-base">{producto.descripcion}</p>

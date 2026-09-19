@@ -19,37 +19,12 @@ router.get('/tutorial', async (req, res) => {
   if (!producto) return res.status(400).json({ error: 'Falta el producto' });
 
   try {
-    // 1. INTENTO DE USAR CEREBRAS AI (El Ferrari)
-    if (process.env.CEREBRAS_API_KEY) {
-      try {
-        const cerebrasRes = await fetch('https://api.cerebras.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.CEREBRAS_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'llama3.1-8b', // Modelo súper rápido de Cerebras
-            messages: [
-              { role: 'system', content: 'Eres un experto ferretero venezolano. Responde con UN SOLO CONSEJO de seguridad técnico y formal (máximo 2 líneas).' },
-              { role: 'user', content: `El cliente está comprando: "${producto}".` }
-            ],
-            max_tokens: 60,
-            temperature: 0.7
-          })
-        });
-
-        if (cerebrasRes.ok) {
-          const data = await cerebrasRes.json();
-          const iaTip = data.choices[0]?.message?.content?.replace(/\*/g, '').trim();
-          if (iaTip) {
-            return res.json({ tip: iaTip }); // Retornamos inmediatamente si Cerebras funcionó
-          }
-        }
-      } catch (cerebrasError) {
-        console.warn("[API] Cerebras falló o dio timeout. Cayendo al diccionario de respaldo...");
-      }
-    }
+    // NOTA DE ARQUITECTURA: 
+    // Integración directa con IA externa (Cerebras) desactivada intencionalmente 
+    // para evitar cuellos de botella en la red (latencia), agotamiento de tokens 
+    // y fallas por bloqueos de facturación (payment_required).
+    // Se utiliza el Diccionario Estático (Mock Paracaídas) para garantizar 100% de 
+    // disponibilidad, 0ms de latencia y proteger la cuota de la API principal.
 
     // 2. FALLBACK AL MOCK (El Paracaídas - Si no hay Key o Cerebras falla)
     const prodLower = producto.toLowerCase();

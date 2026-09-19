@@ -6,6 +6,7 @@ export default function Home() {
   interface Producto { id: number; nombre: string; precio: number; imagen_url?: string; sku: string; marca?: string; stock: number; descripcion?: string; }
   const [resultados, setResultados] = useState<Producto[] | null>(null);
   const [sustitutos, setSustitutos] = useState<Producto[] | null>(null);
+  const [complementarios, setComplementarios] = useState<Producto[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCatalogMode, setIsCatalogMode] = useState(false);
@@ -29,6 +30,7 @@ export default function Home() {
     setError(null);
     setResultados(null);
     setSustitutos(null);
+    setComplementarios(null);
     setIsCatalogMode(false);
 
     try {
@@ -47,6 +49,7 @@ export default function Home() {
       const data = await res.json();
       setResultados(data.productos || []);
       setSustitutos(data.sustitutos || []);
+      setComplementarios(data.complementarios || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -257,6 +260,35 @@ export default function Home() {
               </div>
             </div>
           ))}
+
+          {/* Productos Complementarios (Venta Cruzada) */}
+          {complementarios && complementarios.length > 0 && !loading && (
+            <div className="mt-8 mb-8 p-6 bg-emerald-50 rounded-3xl border border-emerald-100 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-2xl">🛠️</span>
+                <h3 className="text-xl font-bold text-emerald-900">Para tu proyecto también vas a necesitar:</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {complementarios.map((comp: Producto) => (
+                  <div key={`comp-${comp.id}`} className="bg-white p-4 rounded-2xl flex items-center gap-4 hover:shadow-md transition-shadow border border-emerald-50 cursor-pointer">
+                    <div className="w-16 h-16 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
+                      {comp.imagen_url ? (
+                        <img src={comp.imagen_url} alt={comp.nombre} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                          <svg className="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800 leading-tight">{comp.nombre}</h4>
+                      <div className="text-orange-600 font-black text-sm mt-1">${comp.precio}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Sin Resultados */}
           {resultados && resultados.length === 0 && !loading && (

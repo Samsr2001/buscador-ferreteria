@@ -74,9 +74,37 @@ router.post('/', async (req, res) => {
     // Si la BD devuelve un objeto vacío, lo convertimos a array
     const productosEncontrados = Array.isArray(data) ? data : (Object.keys(data).length > 0 ? [data] : []);
 
+    let sustitutosEncontrados = [];
+
+    // LÓGICA DE SUSTITUTOS CON IA
+    if (productosEncontrados.length === 0) {
+      console.log(`[API] 🔄 No hay stock de "${terminoNormalizado}". Pidiendo sustituto a la IA...`);
+      
+      // Le mandamos un prompt "hackeado" a n8n para que Gemini busque una alternativa
+      const promptSustituto = `${terminoNormalizado} (AVISO PARA LA IA: No hay stock de esto. Dime UNA alternativa funcional o sustituto. SOLO UNA PALABRA GENÉRICA).`;
+      
+      try {
+        const resSus = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ busqueda: promptSustituto }),
+        });
+        
+        const txtSus = await resSus.text();
+        let dataSus = txtSus;
+        try { dataSus = JSON.parse(txtSus); } catch(e) {}
+        
+        if (resSus.ok && !(resSus.status === 500 && dataSus?.message === 'No item to return was found')) {
+           sustitutosEncontrados = Array.isArray(dataSus) ? dataSus : (Object.keys(dataSus).length > 0 ? [dataSus] : []);
+        }
+      } catch (e) {
+        console.error("[API] Error buscando sustituto:", e.message);
+      }
+    }
+
     const respuestaFinal = { 
       productos: productosEncontrados,
-      sustitutos: [] // Preparado para el próximo sprint
+      sustitutos: sustitutosEncontrados
     };
 
     // 4. Guardamos la respuesta en el caché con una marca de tiempo (para el TTL)

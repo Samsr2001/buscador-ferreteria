@@ -19,26 +19,34 @@ router.get('/tutorial', async (req, res) => {
   if (!producto) return res.status(400).json({ error: 'Falta el producto' });
 
   try {
-    // Usamos Gemini 1.5 Flash para un tip rápido de seguridad/uso
-    const GEMINI_KEY = process.env.GEMINI_API_KEY || 'AIzaSyAaff5qGYkUggZhhdON7sabGUZ7I5IO-MM';
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
-    
-    const prompt = `Actúa como un experto ferretero experimentado. El cliente está comprando: "${producto}". Escribe UN SOLO CONSEJO de seguridad o tip de uso experto muy breve (máximo 2 líneas). Escríbelo en español neutro (estilo venezolano, sin modismos argentinos, puedes usar palabras como "chévere" de vez en cuando). Tono amigable y directo.`;
-    
-    const apiRes = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
-    
-    const data = await apiRes.json();
-    const tip = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Recuerda usar protección y leer las instrucciones de uso.';
-    
-    res.json({ tip: tip.replace(/\*/g, '').trim() }); // limpiamos asteriscos de markdown
+    // =====================================================================
+    // MOCK DE IA: Generación de tips estáticos para evitar Rate Limits
+    // =====================================================================
+    const prodLower = producto.toLowerCase();
+    let tip = "Recuerda usar protección y leer las instrucciones de uso, ¡suerte con el proyecto pana!";
+
+    if (prodLower.includes("tornillo") || prodLower.includes("clavo") || prodLower.includes("tarugo")) {
+      tip = "¡Pilas con los dedos! Usa la herramienta adecuada y no los fuerces si entran torcidos.";
+    } else if (prodLower.includes("cinta") || prodLower.includes("cable") || prodLower.includes("tomacorriente") || prodLower.includes("térmica")) {
+      tip = "¡Chévere que vayas a arreglar esto! Pero primero, bájale a la cuchilla (corta la corriente) por pura seguridad.";
+    } else if (prodLower.includes("pintura") || prodLower.includes("pincel") || prodLower.includes("rodillo")) {
+      tip = "Cubre bien el piso antes de arrancar. ¡Una buena preparación es el 90% de un acabado profesional!";
+    } else if (prodLower.includes("amoladora") || prodLower.includes("taladro") || prodLower.includes("sierra") || prodLower.includes("soldadora")) {
+      tip = "¡Lentes y guantes de seguridad obligatorios, pana! Estas máquinas no perdonan, úsalas con firmeza.";
+    } else if (prodLower.includes("masilla") || prodLower.includes("silicona") || prodLower.includes("adhesivo") || prodLower.includes("espuma") || prodLower.includes("cemento")) {
+      tip = "Trabaja en un lugar bien ventilado. ¡Esa broma pega durísimo y mancha la ropa rápido!";
+    } else if (prodLower.includes("llave") || prodLower.includes("alicate") || prodLower.includes("destornillador") || prodLower.includes("pinza") || prodLower.includes("martillo")) {
+      tip = "Aplica la fuerza siempre de forma controlada. Si el agarre se resbala, ¡mejor acomodar antes que lastimarse!";
+    } else if (prodLower.includes("caño") || prodLower.includes("sifón") || prodLower.includes("teflón") || prodLower.includes("flexible") || prodLower.includes("codo")) {
+      tip = "Ponle siempre un par de vueltas de teflón extra a las roscas. ¡Mejor prevenir una gota que secar un charco!";
+    } else if (prodLower.includes("guante") || prodLower.includes("anteojo")) {
+      tip = "¡Excelente elección! La seguridad es lo primero. Úsalos siempre que operes herramientas.";
+    }
+
+    // Devolvemos el tip instantáneamente sin depender de APIs externas
+    res.json({ tip });
   } catch (error) {
-    console.error("[API] Error al generar tutorial:", error.message);
+    console.error("[API] Error en el mock del tutorial:", error.message);
     res.json({ tip: 'Recuerda usar siempre tu equipo de seguridad. ¡Mucha suerte con el proyecto!' });
   }
 });

@@ -125,30 +125,33 @@ export default function Home() {
       </nav>
 
       {/* Header / Hero */}
-      <header className="w-full pt-32 pb-10 px-4 flex flex-col items-center justify-center">
-        <div className="mb-4 p-4 bg-orange-50 rounded-2xl border border-orange-100 shadow-sm">
+      <header className="w-full pt-32 pb-16 px-4 flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Decorative background blob */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+        
+        <div className="mb-6 p-4 bg-orange-50 rounded-2xl border border-orange-100 shadow-sm animate-bounce-slow">
           <svg className="w-12 h-12 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
           </svg>
         </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 tracking-tight text-slate-900">
-          Ferre<span className="text-orange-600">Buscador</span> AI
+        <h1 className="text-4xl md:text-6xl font-extrabold text-center mb-6 tracking-tight text-slate-900 drop-shadow-sm">
+          Ferre<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">Buscador</span> AI
         </h1>
-        <p className="text-lg md:text-xl text-slate-500 max-w-2xl text-center mb-8 font-light">
-          Buscador Inteligente, Describe el repuesto con tus propias palabras y nuestra IA hará el resto
+        <p className="text-lg md:text-2xl text-slate-500 max-w-3xl text-center mb-10 font-light leading-relaxed">
+          Buscador Inteligente. Describe el repuesto con tus propias palabras y nuestra IA hará el resto.
         </p>
 
         {/* Search Bar */}
-        <div className="w-full max-w-2xl relative">
+        <div className="w-full max-w-3xl relative z-10 hover:shadow-lg transition-shadow duration-300 rounded-2xl">
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg className="w-6 h-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <svg className="w-7 h-7 text-slate-400 group-focus-within:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
             <input
               type="text"
-              className="block w-full pl-12 pr-32 py-4 text-lg bg-white border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-sm"
+              className="block w-full pl-14 pr-36 py-5 text-xl bg-white border-2 border-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-sm"
               placeholder="Ej: la piecita de metal para ajustar tubos..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
@@ -157,13 +160,16 @@ export default function Home() {
             <button
               onClick={() => buscarProductos(busqueda)}
               disabled={loading || busqueda.trim().length < 2}
-              className="absolute right-2 top-2 bottom-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 text-lg rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex items-center gap-2"
             >
               {loading ? (
-                <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <>
+                  <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Buscando</span>
+                </>
               ) : 'Buscar'}
             </button>
           </div>
@@ -248,11 +254,11 @@ export default function Home() {
 
         <div className="grid gap-6">
           {resultados && resultados.length > 0 && resultados.map((producto, idx) => (
-            <div key={idx} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-slate-100 flex flex-col md:flex-row">
+            <div key={idx} className="bg-white rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-slate-100 flex flex-col md:flex-row group">
               {/* Product Image */}
-              <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100">
+              <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100 overflow-hidden">
                 {producto.imagen_url ? (
-                  <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply" />
+                  <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
                 ) : (
                   <div className="text-slate-300 flex flex-col items-center">
                     <svg className="w-20 h-20 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">

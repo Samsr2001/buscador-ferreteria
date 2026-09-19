@@ -55,4 +55,4 @@ El desarrollo de este sistema se apoya en los estándares y principios estudiado
 - [x] Construir arquitectura base y conexión a BD (Sprint 2).
 - [x] Integrar modelo de IA (Gemini vía n8n) en el endpoint de búsqueda (Sprint 3).
 - [x] Desplegar backend en Render y frontend en Vercel con CI/CD (Sprint 3).
-- [ ] Refinar UI, testing final y elaboración de diagramas de Casos de Uso (Sprint 4).
+- [ ] Refinar UI y testing final (Sprint 4).

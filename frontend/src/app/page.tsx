@@ -5,6 +5,7 @@ export default function Home() {
   const [busqueda, setBusqueda] = useState('');
   interface Producto { id: number; nombre: string; precio: number; imagen_url?: string; sku: string; marca?: string; stock: number; descripcion?: string; }
   const [resultados, setResultados] = useState<Producto[] | null>(null);
+  const [sustitutos, setSustitutos] = useState<Producto[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCatalogMode, setIsCatalogMode] = useState(false);
@@ -27,6 +28,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setResultados(null);
+    setSustitutos(null);
     setIsCatalogMode(false);
 
     try {
@@ -34,7 +36,7 @@ export default function Home() {
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: trimmed })
+        body: JSON.stringify({ query: trimmed }),
       });
 
       if (!res.ok) {
@@ -44,6 +46,7 @@ export default function Home() {
 
       const data = await res.json();
       setResultados(data.productos || []);
+      setSustitutos(data.sustitutos || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -257,10 +260,58 @@ export default function Home() {
 
           {/* Sin Resultados */}
           {resultados && resultados.length === 0 && !loading && (
-            <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-slate-100">
-              <span className="text-5xl mb-6 block">😕</span>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">No encontramos resultados</h3>
-              <p className="text-slate-500 text-lg">Intenta describir el repuesto con otras palabras o selecciona otra categoria.</p>
+            <div className="text-center py-10 bg-white rounded-3xl shadow-sm border border-slate-100 mb-8">
+              <span className="text-5xl mb-6 block">😢</span>
+              <h3 className="text-2xl font-bold text-slate-800 mb-3">No encontramos resultados exactos</h3>
+              <p className="text-slate-500 text-lg">Intenta describir el repuesto con otras palabras o selecciona otra categoría.</p>
+            </div>
+          )}
+
+          {/* Sustitutos Recomendados */}
+          {sustitutos && sustitutos.length > 0 && !loading && (
+            <div className="mt-8">
+              <div className="mb-6 flex items-center gap-3">
+                <span className="text-3xl">💡</span>
+                <h3 className="text-2xl font-bold text-slate-900">Alternativas sugeridas por IA</h3>
+              </div>
+              {sustitutos.map((producto: Producto) => (
+                <div key={`sus-${producto.id}`} className="bg-white rounded-3xl shadow-sm border-2 border-indigo-100 overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow relative">
+                  <div className="absolute top-4 right-4 bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Sustituto Recomendado</div>
+                  
+                  {/* Product Image */}
+                  <div className="w-full md:w-64 h-56 md:h-auto bg-slate-50 flex items-center justify-center border-b md:border-b-0 md:border-r border-slate-100 relative overflow-hidden">
+                    {producto.imagen_url ? (
+                      <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-slate-300 flex flex-col items-center">
+                        <svg className="w-16 h-16 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span className="text-xs font-medium uppercase tracking-wider">Sin foto</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Product Details */}
+                  <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                    <div className="flex justify-between items-start mb-3 mt-4 md:mt-0">
+                      <h2 className="text-2xl font-bold text-slate-900 leading-tight pr-24">{producto.nombre}</h2>
+                      <span className="text-2xl font-black text-orange-600 bg-orange-50 px-4 py-1.5 rounded-xl border border-orange-100 shadow-sm whitespace-nowrap">${producto.precio}</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mb-5">
+                      <span className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider">SKU: {producto.sku}</span>
+                      <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider">Marca: {producto.marca || 'Genérica'}</span>
+                      <span className={`${producto.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'} text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1`}>
+                        <span className={`w-2 h-2 rounded-full ${producto.stock > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                        Stock: {producto.stock}
+                      </span>
+                    </div>
+                    
+                    <p className="text-slate-600 leading-relaxed text-base">{producto.descripcion}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

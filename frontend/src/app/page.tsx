@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [busqueda, setBusqueda] = useState('');
@@ -7,6 +7,7 @@ export default function Home() {
   const [resultados, setResultados] = useState<Producto[] | null>(null);
   const [sustitutos, setSustitutos] = useState<Producto[] | null>(null);
   const [complementarios, setComplementarios] = useState<Producto[] | null>(null);
+  const [tips, setTips] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCatalogMode, setIsCatalogMode] = useState(false);
@@ -21,6 +22,28 @@ export default function Home() {
     { id: 'Plomeria', nombre: 'Plomería' },
     { id: 'Tornilleria', nombre: 'Tornillería' }
   ];
+
+  // Fetch tutorial para los resultados principales
+  useEffect(() => {
+    if (resultados && resultados.length > 0) {
+      resultados.forEach(async (producto) => {
+        if (!tips[producto.id]) {
+          try {
+            const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/buscar').replace('/api/buscar', '');
+            const res = await fetch(`${baseUrl}/api/buscar/tutorial?producto=${encodeURIComponent(producto.nombre)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.tip) {
+                setTips(prev => ({ ...prev, [producto.id]: data.tip }));
+              }
+            }
+          } catch (e) {
+            console.error("Error fetching tutorial", e);
+          }
+        }
+      });
+    }
+  }, [resultados]);
 
   const buscarProductos = async (termino: string) => {
     const trimmed = termino.trim();
@@ -257,6 +280,17 @@ export default function Home() {
                 </div>
                 
                 <p className="text-slate-600 leading-relaxed text-base">{producto.descripcion}</p>
+                
+                {/* Tip del Experto / Mini-tutorial */}
+                {tips[producto.id] && (
+                  <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-4 flex gap-3">
+                    <span className="text-xl">👷‍♂️</span>
+                    <div>
+                      <span className="font-bold text-amber-900 text-sm block mb-1">Tip de uso / Seguridad:</span>
+                      <p className="text-amber-800 text-sm leading-relaxed">{tips[producto.id]}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}

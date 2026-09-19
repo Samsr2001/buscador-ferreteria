@@ -102,9 +102,42 @@ router.post('/', async (req, res) => {
       }
     }
 
+    let complementariosEncontrados = [];
+
+    // LÓGICA DE VENTA CRUZADA (COMPLEMENTARIOS)
+    if (productosEncontrados.length > 0) {
+      console.log(`[API] 🛒 Buscando producto complementario para venta cruzada...`);
+      
+      const promptComplementario = `${terminoNormalizado} (AVISO PARA IA: Ignora la búsqueda anterior. Dime UNA SOLA PALABRA GENÉRICA de una herramienta o material complementario que se use junto con esto. Ej: si buscan pintura, devuelve pincel o lija).`;
+      
+      try {
+        const resComp = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ busqueda: promptComplementario }),
+        });
+        
+        const txtComp = await resComp.text();
+        let dataComp = txtComp;
+        try { dataComp = JSON.parse(txtComp); } catch(e) {}
+        
+        if (resComp.ok && !(resComp.status === 500 && dataComp?.message === 'No item to return was found')) {
+           complementariosEncontrados = Array.isArray(dataComp) ? dataComp : (Object.keys(dataComp).length > 0 ? [dataComp] : []);
+           
+           // Filtramos para asegurarnos de no sugerir exactamente el mismo producto que ya encontraron
+           if (productosEncontrados.length > 0 && complementariosEncontrados.length > 0) {
+             complementariosEncontrados = complementariosEncontrados.filter(c => c.id !== productosEncontrados[0].id);
+           }
+        }
+      } catch (e) {
+        console.error("[API] Error buscando complementario:", e.message);
+      }
+    }
+
     const respuestaFinal = { 
       productos: productosEncontrados,
-      sustitutos: sustitutosEncontrados
+      sustitutos: sustitutosEncontrados,
+      complementarios: complementariosEncontrados
     };
 
     // 4. Guardamos la respuesta en el caché con una marca de tiempo (para el TTL)

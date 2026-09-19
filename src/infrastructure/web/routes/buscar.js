@@ -23,24 +23,24 @@ router.get('/tutorial', async (req, res) => {
     // MOCK DE IA: Generación de tips estáticos para evitar Rate Limits
     // =====================================================================
     const prodLower = producto.toLowerCase();
-    let tip = "Recuerda usar protección y leer las instrucciones de uso, ¡suerte con el proyecto pana!";
+    let tip = "Recuerda usar equipo de protección adecuado y leer las instrucciones de uso antes de comenzar.";
 
     if (prodLower.includes("tornillo") || prodLower.includes("clavo") || prodLower.includes("tarugo")) {
-      tip = "¡Pilas con los dedos! Usa la herramienta adecuada y no los fuerces si entran torcidos.";
+      tip = "Utiliza la herramienta adecuada y no fuerces el material. Mantén las manos alejadas de la zona de impacto.";
     } else if (prodLower.includes("cinta") || prodLower.includes("cable") || prodLower.includes("tomacorriente") || prodLower.includes("térmica")) {
-      tip = "¡Chévere que vayas a arreglar esto! Pero primero, bájale a la cuchilla (corta la corriente) por pura seguridad.";
+      tip = "Por seguridad, corta siempre el suministro eléctrico desde el tablero principal antes de manipular estos componentes.";
     } else if (prodLower.includes("pintura") || prodLower.includes("pincel") || prodLower.includes("rodillo")) {
-      tip = "Cubre bien el piso antes de arrancar. ¡Una buena preparación es el 90% de un acabado profesional!";
+      tip = "Protege las superficies de trabajo y asegura una buena ventilación. La preparación previa garantiza un acabado profesional.";
     } else if (prodLower.includes("amoladora") || prodLower.includes("taladro") || prodLower.includes("sierra") || prodLower.includes("soldadora")) {
-      tip = "¡Lentes y guantes de seguridad obligatorios, pana! Estas máquinas no perdonan, úsalas con firmeza.";
+      tip = "El uso de lentes y guantes de seguridad es obligatorio. Opera la maquinaria con firmeza y sin distracciones.";
     } else if (prodLower.includes("masilla") || prodLower.includes("silicona") || prodLower.includes("adhesivo") || prodLower.includes("espuma") || prodLower.includes("cemento")) {
-      tip = "Trabaja en un lugar bien ventilado. ¡Esa broma pega durísimo y mancha la ropa rápido!";
+      tip = "Trabaja en áreas bien ventiladas para evitar inhalar vapores tóxicos. Utiliza ropa de trabajo adecuada.";
     } else if (prodLower.includes("llave") || prodLower.includes("alicate") || prodLower.includes("destornillador") || prodLower.includes("pinza") || prodLower.includes("martillo")) {
-      tip = "Aplica la fuerza siempre de forma controlada. Si el agarre se resbala, ¡mejor acomodar antes que lastimarse!";
+      tip = "Aplica la fuerza de forma controlada y siempre en dirección opuesta a tu cuerpo para evitar lesiones por deslizamiento.";
     } else if (prodLower.includes("caño") || prodLower.includes("sifón") || prodLower.includes("teflón") || prodLower.includes("flexible") || prodLower.includes("codo")) {
-      tip = "Ponle siempre un par de vueltas de teflón extra a las roscas. ¡Mejor prevenir una gota que secar un charco!";
+      tip = "Aplica cinta selladora en las roscas y ajusta con cuidado para garantizar un sellado hermético y evitar fugas.";
     } else if (prodLower.includes("guante") || prodLower.includes("anteojo")) {
-      tip = "¡Excelente elección! La seguridad es lo primero. Úsalos siempre que operes herramientas.";
+      tip = "El equipo de protección es indispensable. Verifica su estado óptimo antes de operar cualquier herramienta.";
     }
 
     // Devolvemos el tip instantáneamente sin depender de APIs externas

@@ -175,6 +175,29 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* Píldoras de Búsqueda Sugerida */}
+        <div className="w-full max-w-3xl mt-6 flex flex-wrap justify-center gap-2 lg:gap-3 z-10">
+          <span className="text-sm text-slate-400 font-medium mr-2 flex items-center">Prueba con:</span>
+          <button 
+            onClick={() => { setBusqueda('algo para tapar huecos en la pared'); buscarProductos('algo para tapar huecos en la pared'); }}
+            className="text-xs sm:text-sm bg-white/60 hover:bg-white text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
+          >
+            "algo para tapar huecos..."
+          </button>
+          <button 
+            onClick={() => { setBusqueda('la piecita para que el agua no gotee'); buscarProductos('la piecita para que el agua no gotee'); }}
+            className="text-xs sm:text-sm bg-white/60 hover:bg-white text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 px-4 py-2 rounded-full transition-all shadow-sm hover:shadow"
+          >
+            "la piecita para que el agua no gotee"
+          </button>
+          <button 
+            onClick={() => { setBusqueda('la cosa que da electricidad sin cable'); buscarProductos('la cosa que da electricidad sin cable'); }}
+            className="text-xs sm:text-sm bg-white/60 hover:bg-white text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 px-4 py-2 rounded-full transition-all shadow-sm hover:shadow hidden sm:block"
+          >
+            "la cosa que da electricidad sin cable"
+          </button>
+        </div>
       </header>
 
       {/* Main Content Area */}

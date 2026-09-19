@@ -113,7 +113,7 @@ export default function Home() {
               <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
               </svg>
-              <span className="font-bold text-xl tracking-tight text-slate-900">Ferre<span className="text-orange-600">Buscador</span></span>
+              <span className="font-bold text-xl tracking-tight text-slate-900">Ferre<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">Buscador</span></span>
             </div>
             <div className="flex space-x-4 sm:space-x-8 text-sm sm:text-base font-medium">
               <button onClick={() => { setResultados(null); setBusqueda(''); setIsCatalogMode(false); }} className="text-slate-700 hover:text-orange-600 transition-colors">Inicio</button>

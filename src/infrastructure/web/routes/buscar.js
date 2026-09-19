@@ -5,6 +5,9 @@ const router = express.Router();
 const N8N_WEBHOOK_URL = 'http://68.155.150.242/webhook/887099d0-a042-41bb-8d84-e1c0cfe0c7e6';
 const N8N_TIMEOUT_MS = 25000; // 25 seconds — n8n + Gemini can be slow
 
+// Diccionario en memoria para almacenar las búsquedas recientes (Caché)
+const cache = {};
+
 // GET /api/buscar/health — basic uptime check
 router.get('/health', (_req, res) => {
   res.json({ status: 'ok', n8n_url: N8N_WEBHOOK_URL, timestamp: new Date().toISOString() });
@@ -17,23 +20,39 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'El término de búsqueda debe tener al menos 2 caracteres.' });
   }
 
+  // Normalización avanzada: sin tildes, minúsculas, y un solo espacio entre palabras
+  const terminoNormalizado = query
+    .trim()
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
+    .replace(/\s+/g, " ");
+
+  const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos de memoria límite
+
+  // 1. Verificamos si ya buscamos esto antes (HIT DE CACHÉ) y si no caducó (TTL)
+  const cacheEntry = cache[terminoNormalizado];
+  if (cacheEntry && (Date.now() - cacheEntry.timestamp < CACHE_TTL_MS)) {
+    console.log(`[API] ⚡ CACHÉ HIT para: "${terminoNormalizado}" (Evitamos llamar a la IA)`);
+    return res.json(cacheEntry.data);
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), N8N_TIMEOUT_MS);
 
   try {
-    console.log(`[API] Iniciando búsqueda inteligente para: "${query.trim()}"`);
+    console.log(`[API] 🧠 Iniciando búsqueda inteligente en IA para: "${terminoNormalizado}"`);
 
-    // 1. Delegar el procesamiento a la capa de IA (n8n)
+    // 2. Delegar el procesamiento a la capa de IA (n8n)
     const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ busqueda: query.trim() }),
+      body: JSON.stringify({ busqueda: terminoNormalizado }),
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
 
-    // 2. Obtener respuesta
+    // 3. Obtener respuesta
     const textData = await n8nResponse.text();
     let data;
     try {
@@ -55,11 +74,19 @@ router.post('/', async (req, res) => {
     // Si la BD devuelve un objeto vacío, lo convertimos a array
     const productosEncontrados = Array.isArray(data) ? data : (Object.keys(data).length > 0 ? [data] : []);
 
-    // 3. Devolver la estructura que exige swagger.yaml
-    res.json({ 
+    const respuestaFinal = { 
       productos: productosEncontrados,
       sustitutos: [] // Preparado para el próximo sprint
-    });
+    };
+
+    // 4. Guardamos la respuesta en el caché con una marca de tiempo (para el TTL)
+    cache[terminoNormalizado] = {
+      data: respuestaFinal,
+      timestamp: Date.now()
+    };
+
+    // 5. Devolver la estructura que exige swagger.yaml
+    res.json(respuestaFinal);
 
   } catch (error) {
     clearTimeout(timeoutId);

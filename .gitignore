@@ -18,3 +18,9 @@ check_webhook.json
 pegar_en_n8n.json
 creds.json
 avance.txt
+
+# Archivos de contexto local
+defensa/
+soft1/
+varios/
+doc contexto/

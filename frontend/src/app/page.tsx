@@ -79,17 +79,17 @@ export default function Home() {
       {/* Navigation Bar */}
       <nav className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm fixed top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
+          <div className="flex flex-col sm:flex-row justify-between py-3 sm:h-16 items-center gap-3 sm:gap-0">
             <div className="flex items-center gap-2">
               <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
               </svg>
               <span className="font-bold text-xl tracking-tight text-slate-900">Ferre<span className="text-orange-600">Buscador</span></span>
             </div>
-            <div className="hidden sm:flex space-x-8">
-              <button onClick={() => { setResultados(null); setBusqueda(''); setIsCatalogMode(false); }} className="text-slate-700 font-medium hover:text-orange-600 transition-colors">Inicio</button>
-              <button onClick={() => fetchCatalogo()} className="text-slate-700 font-medium hover:text-orange-600 transition-colors">Catalogo</button>
-              <button onClick={() => setShowSucursales(true)} className="text-slate-700 font-medium hover:text-orange-600 transition-colors">Ferreterias Asociadas</button>
+            <div className="flex space-x-4 sm:space-x-8 text-sm sm:text-base font-medium">
+              <button onClick={() => { setResultados(null); setBusqueda(''); setIsCatalogMode(false); }} className="text-slate-700 hover:text-orange-600 transition-colors">Inicio</button>
+              <button onClick={() => fetchCatalogo()} className="text-slate-700 hover:text-orange-600 transition-colors">Catálogo</button>
+              <button onClick={() => setShowSucursales(true)} className="text-slate-700 hover:text-orange-600 transition-colors">Ferreterías</button>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function Home() {
           Ferre<span className="text-orange-600">Buscador</span> AI
         </h1>
         <p className="text-lg md:text-xl text-slate-500 max-w-2xl text-center mb-8 font-light">
-          Buscador inteligente con NLP. Describi el repuesto con tus propias palabras y nuestra IA se encarga del resto.
+          Buscador Inteligente, Describe el repuesto con tus propias palabras y nuestra IA hará el resto
         </p>
 
         {/* Search Bar */}

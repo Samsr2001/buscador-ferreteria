@@ -192,10 +192,10 @@ export default function Home() {
             "la piecita para que el agua no gotee"
           </button>
           <button 
-            onClick={() => { setBusqueda('la cosa que da electricidad sin cable'); buscarProductos('la cosa que da electricidad sin cable'); }}
+            onClick={() => { setBusqueda('el plástico negro para tapar cables pelados'); buscarProductos('el plástico negro para tapar cables pelados'); }}
             className="text-xs sm:text-sm bg-white/60 hover:bg-white text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 px-4 py-2 rounded-full transition-all shadow-sm hover:shadow hidden sm:block"
           >
-            "la cosa que da electricidad sin cable"
+            "el plástico negro para tapar cables..."
           </button>
         </div>
       </header>

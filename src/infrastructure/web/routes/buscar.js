@@ -13,6 +13,36 @@ router.get('/health', (_req, res) => {
   res.json({ status: 'ok', n8n_url: N8N_WEBHOOK_URL, timestamp: new Date().toISOString() });
 });
 
+// GET /api/buscar/tutorial - Expert Tip via Gemini directly
+router.get('/tutorial', async (req, res) => {
+  const { producto } = req.query;
+  if (!producto) return res.status(400).json({ error: 'Falta el producto' });
+
+  try {
+    // Usamos Gemini 3.5 Flash Lite para un tip rápido de seguridad/uso
+    const GEMINI_KEY = process.env.GEMINI_API_KEY || 'AIzaSyAaff5qGYkUggZhhdON7sabGUZ7I5IO-MM';
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${GEMINI_KEY}`;
+    
+    const prompt = `Actúa como un experto ferretero experimentado. El cliente está comprando: "${producto}". Escribe UN SOLO CONSEJO de seguridad o tip de uso experto muy breve (máximo 2 líneas). Tono amigable y directo.`;
+    
+    const apiRes = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+    
+    const data = await apiRes.json();
+    const tip = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Recuerda usar siempre equipo de protección personal adecuado.';
+    
+    res.json({ tip: tip.replace(/\*/g, '').trim() }); // limpiamos asteriscos de markdown
+  } catch (error) {
+    console.error("[API] Error al generar tutorial:", error.message);
+    res.json({ tip: 'Lee atentamente el manual de instrucciones antes de utilizar esta herramienta.' });
+  }
+});
+
 router.post('/', async (req, res) => {
   const { query } = req.body;
   

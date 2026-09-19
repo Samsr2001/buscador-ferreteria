@@ -124,9 +124,10 @@ router.post('/', async (req, res) => {
         if (resComp.ok && !(resComp.status === 500 && dataComp?.message === 'No item to return was found')) {
            complementariosEncontrados = Array.isArray(dataComp) ? dataComp : (Object.keys(dataComp).length > 0 ? [dataComp] : []);
            
-           // Filtramos para asegurarnos de no sugerir exactamente el mismo producto que ya encontraron
+           // Filtramos para asegurarnos de no sugerir exactamente ningún producto que ya hayan encontrado en la búsqueda principal
            if (productosEncontrados.length > 0 && complementariosEncontrados.length > 0) {
-             complementariosEncontrados = complementariosEncontrados.filter(c => c.id !== productosEncontrados[0].id);
+             const idsPrincipales = productosEncontrados.map(p => p.id);
+             complementariosEncontrados = complementariosEncontrados.filter(c => !idsPrincipales.includes(c.id));
            }
         }
       } catch (e) {

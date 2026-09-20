@@ -1,6 +1,6 @@
 # 🛠️ Proyecto 21: Buscador Inteligente para Ferreterías
 
-![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo_(Sprint_3)-blue)
+![Estado del Proyecto](https://img.shields.io/badge/Estado-Completado_(Producción)-success)
 ![Materia](https://img.shields.io/badge/Materia-Ingeniería_de_Software-brightgreen)
 
 Bienvenido al repositorio del **Buscador Inteligente para Ferreterías**. Este proyecto académico corresponde al Proyecto Nº 21 de la materia de Ingeniería de Software.
@@ -55,4 +55,4 @@ El desarrollo de este sistema se apoya en los estándares y principios estudiado
 - [x] Construir arquitectura base y conexión a BD (Sprint 2).
 - [x] Integrar modelo de IA (Gemini vía n8n) en el endpoint de búsqueda (Sprint 3).
 - [x] Desplegar backend en Render y frontend en Vercel con CI/CD (Sprint 3).
-- [ ] Refinar UI y testing final (Sprint 4).
+- [x] Refinar UI y testing final (Sprint 4).

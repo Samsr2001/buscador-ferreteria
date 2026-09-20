@@ -250,10 +250,17 @@ export default function Home() {
                   <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">📦 Catalogo Completo</h2>
                   <p className="text-slate-500 mt-1">Explora el stock por categorias.</p>
                 </div>
-                <div className="relative">
+                <div 
+                  className="relative"
+                  onBlur={(e) => {
+                    // Si el foco se mueve afuera de este contenedor, cerramos el dropdown
+                    if (!e.currentTarget.contains(e.relatedTarget)) {
+                      setDropdownAbierto(false);
+                    }
+                  }}
+                >
                   <button
                     onClick={() => setDropdownAbierto(!dropdownAbierto)}
-                    onBlur={() => setTimeout(() => setDropdownAbierto(false), 200)}
                     className="flex items-center justify-between w-full sm:w-64 px-4 py-3 text-base border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 sm:text-sm rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-medium cursor-pointer shadow-sm transition-all duration-200"
                   >
                     <span>{categoriasMenu.find(c => c.id === filtroCategoria)?.nombre || 'Todas las Categorías'}</span>
@@ -271,7 +278,7 @@ export default function Home() {
                             fetchCatalogo(cat.id);
                             setDropdownAbierto(false);
                           }}
-                          className={`block w-full text-left px-4 py-3 text-sm transition-colors duration-150 ${
+                          className={`block w-full text-left px-4 py-3 text-sm transition-colors duration-150 relative z-10 ${
                             filtroCategoria === cat.id 
                               ? 'bg-orange-50 text-orange-700 font-semibold' 
                               : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'

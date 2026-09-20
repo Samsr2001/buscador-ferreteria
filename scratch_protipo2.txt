@@ -1,0 +1,416 @@
+Universidad  Nacional Experimental de Guayana
+114300
+0
+Proyecto de carrera: Ingeniería en Informática
+   Unidad curricular: ingeniería del software 1
+   Semestre: 6
+  
+    
+Proyecto 21: Buscador Inteligente para Ferreterías
+                      
+Docente:                                                                                                                Estudiante:
+Prof. Dubraska Roca                                                                                             Samuel Silva
+                                                                                                                             C.I.: 32.038.103  
+                                                                                                                   
+       Ciudad Guayana, 9 de Septiembre del año 2026
+Descripción del Proyecto
+El "Proyecto 21" consiste en el desarrollo de una plataforma web para el sector ferretero que integra Inteligencia Artificial para optimizar las consultas de inventario. El sistema está diseñado para procesar entradas de texto informales, comprender la intención del cliente mediante procesamiento de lenguaje natural (NLP) y devolver coincidencias exactas y sugerencias de productos sustitutos en tiempo real, operando bajo un modelo distribuido de Arquitectura Limpia (
+Clean Architecture
+).
+Objetivo General
+Desarrollar un Buscador Inteligente para Ferreterías capaz de interpretar el lenguaje coloquial o las descripciones imprecisas de los usuarios, vinculándolas automáticamente con la terminología técnica del inventario, para mostrar el código exacto (SKU), la imagen del producto y sus alternativas sustitutas.
+Objetivos Específicos
+Diseñar una interfaz de usuario (UI/UX) minimalista e intuitiva que permita la captura de consultas en lenguaje natural, reduciendo drásticamente la carga cognitiva del cliente.
+Desarrollar una lógica de servidor (
+Backend
+) bajo el patrón de Arquitectura Limpia que actúe como puente entre la capa de presentación y la base de datos, implementando estrategias de Caché en Memoria para optimizar el rendimiento y la latencia.
+Orquestar un flujo de automatización reactivo que integre el motor de Inteligencia Artificial para evaluar equivalencias técnicas y gestionar casos de inventario vacío de forma segura en una base de datos relacional.
+Bajo el Enfoque Ágil (Adaptativo)
+1. Premisa Metodológica
+Para el desarrollo de este Buscador Inteligente, se descartó de plano el enfoque predictivo tradicional (en cascada), dado que el proyecto involucra tecnologías altamente dinámicas como la Inteligencia Artificial. En su lugar, se adoptó el Enfoque Ágil (Adaptativo). Este paradigma se fundamenta en el control empírico de procesos, priorizando la entrega continua de incrementos de software funcionales y asumiendo la volatilidad de los requisitos como una constante natural del desarrollo.
+1.1. Justificación según la Matriz de Selección Metodológica
+La elección del paradigma ágil se sustenta en los siguientes criterios críticos del proyecto:
+Incertidumbre de Requisitos (Alta):
+ El sistema utiliza Inteligencia Artificial para interpretar lenguaje coloquial impreciso, lo que hace que el alcance técnico inicial sea exploratorio, heurístico y sujeto a ajustes.
+Frecuencia de Retroalimentación (Continua):
+ Se requirieron demostraciones, pruebas de carga (SQA) y ajustes constantes en los 
+prompts
+ y en la latencia del motor de búsqueda.
+2. Gestión de Requisitos (Product Backlog)
+Siguiendo los preceptos del Manifiesto Ágil, los requisitos no fueron "congelados" al inicio del proyecto. La funcionalidad central del buscador (procesamiento de lenguaje natural, traducción técnica y recomendación de sustitutos) se gestionó mediante un 
+Product Backlog
+ dinámico.
+Se utilizaron Historias de Usuario bajo el formato BDD (
+Behavior-Driven Development
+), las cuales fueron priorizadas y refinadas continuamente. La herramienta centralizada de gestión fue el entorno ágil de GitHub (GitHub Projects), lo que permitió la inspección y adaptación constante del equipo ante cualquier cambio.
+3. Ciclo de Vida y Flujo de Entrega (Sprints)
+Para mitigar los riesgos de una entrega única al final del ciclo (
+Big Bang
+), el desarrollo del sistema se orquestó en iteraciones o ciclos cortos (
+Sprints
+), garantizando entregas frecuentes de valor operativo real:
+Sprint 1 - Modelado y Concepción:
+ Creación de la arquitectura base, diagramas UML (casos de uso, actividades, clases y secuencia) y diseño del prototipo visual de la interfaz. 
+Enfoque Ágil:
+ Se priorizó una documentación "apenas suficiente" (
+just-in-time
+) para avanzar rápidamente hacia la construcción.
+Sprint 2 - Cimientos de Datos:
+ Inicialización de la base de datos relacional en PostgreSQL (Supabase) con integración de 
+Full-Text Search
+, y configuración del servidor intermedio (
+Middleware
+) en Node.js/Express alojado en Render.
+Sprint 3 - Integración de Automatización e IA:
+ Despliegue de la Máquina Virtual en Azure, configuración del orquestador n8n y conexión bidireccional con el motor de Google Gemini. 
+Enfoque Ágil:
+ Mitigación empírica del riesgo técnico mediante pruebas de estrés reales, lo que originó la implementación de una Caché en Memoria para optimizar la latencia y el consumo de 
+tokens
+.
+Sprint 4 - Frontend y Producción:
+ Construcción de la interfaz gráfica reactiva en Next.js con Tailwind CSS y despliegue final en la infraestructura 
+serverless
+ de Vercel para su paso a producción y uso operativo.
+4. Aseguramiento de Calidad Preventivo (SQA) y Trabajo Colaborativo
+Para garantizar la calidad técnica del buscador a lo largo de los 
+Sprints
+, se implementaron prácticas de ingeniería robustas:
+Integración Continua y Revisiones:
+ Todo el código fuente fue sometido a Revisiones Técnicas Formales (FTR) a través de 
+Pull Requests
+ colaborativos en GitHub antes de ser integrado a la rama principal (
+main
+).
+Estandarización:
+ Uso de analizadores estáticos (
+Linter
+) para forzar el cumplimiento estricto de convenciones de código limpio.
+Estructura del Trabajo:
+ El desarrollo fluyó mediante una comunicación constante, priorizando el descubrimiento temprano de fallos (como el Problema N+1 resuelto en el Sprint 3) y valorando el software operativo y tolerante a fallos por encima de la documentación exhaustiva.
+5. Análisis Comparativo y Selección del Modelo
+Con el propósito de fundamentar la adopción del paradigma adaptativo para el desarrollo de esta solución tecnológica, se establece el siguiente contraste técnico frente a las metodologías convencionales:
+Criterio / Dimensión
+Enfoque Tradicional (Predictivo)
+Enfoque Ágil (Nuestra elección)
+Gestión de Requisitos
+Definición estática y bloqueo de requerimientos tras la fase inicial.
+Naturaleza evolutiva basada en la priorización del 
+Product Backlog
+.
+Flujo de Entrega
+Ejecución lineal con un despliegue masivo y único al finalizar el ciclo.
+Suministro constante de valor mediante incrementos operativos en 
+Sprints
+.
+Respuesta al Cambio
+La variabilidad es tratada como una falla respecto al plan maestro.
+Capacidad de respuesta empírica que integra el cambio como factor competitivo.
+Métrica de Éxito
+Cumplimiento riguroso de la planificación y el presupuesto original.
+Validación mediante la entrega de software funcional que satisface al usuario.
+a. Proceso de Elicitación de Requisitos y Contextualización
+Antes de definir las funcionalidades del sistema, es crítico contextualizar la realidad operativa que origina este proyecto. Las ferreterías manejan un inventario masivo estructurado bajo terminología estrictamente técnica. Sin embargo, el cliente común carece de esta base de conocimientos, solicitando los repuestos mediante un lenguaje informal o descriptivo (ej. "la piecita de plástico del tubo"). Esta brecha comunicacional genera fricción, pérdida de tiempo en mostrador y ventas fallidas.
+En consecuencia, el proceso de elicitación no se abordó desde un enfoque predictivo tradicional, sino mediante un enfoque ágil. Se aplicaron técnicas de Análisis del Problema de Negocio y definición de Escenarios de Uso para identificar las necesidades centrales del cliente final. A partir de estos hallazgos empíricos, se construyó un 
+Product Backlog
+ enfocado estratégicamente en la integración de Inteligencia Artificial como un "puente traductor" entre la intención coloquial del usuario y el catálogo técnico del negocio.
+b. Requerimientos Funcionales y No Funcionales
+Requerimientos Funcionales (RF):
+RF01:
+ El sistema debe permitir el ingreso de texto en lenguaje coloquial o descripciones imprecisas a través de una barra de búsqueda.
+RF02:
+ El sistema debe integrar un motor de IA capaz de procesar el texto natural y relacionarlo semánticamente con los términos técnicos del inventario.
+RF03:
+ El sistema debe mostrar al usuario el código exacto (SKU), una imagen representativa del producto y sus posibles repuestos sustitutos.
+RF04:
+ El sistema debe manejar casos vacíos (productos no encontrados) alertando al usuario y mostrando sugerencias útiles sin arrojar errores de servidor.
+Requerimientos No Funcionales (RNF):
+RNF01 (Interfaz):
+ La interfaz visual debe estar desarrollada en Next.js 16 utilizando el 
+framework
+ Tailwind CSS v4, aplicando un diseño 
+Mobile-First
+.
+RNF02 (Backend & BD):
+ La lógica del servidor intermedio debe implementarse en Node.js/Express, respaldada por una base de datos relacional en PostgreSQL (Supabase).
+RNF03 (Orquestación y Despliegue):
+ El flujo cognitivo debe ser orquestado mediante n8n. El despliegue debe seguir un esquema distribuido (
+Frontend
+ en Vercel, 
+Backend
+ en Render y el orquestador autoalojado en una VM de Azure).
+RNF04 (Rendimiento y Optimización):
+ El sistema debe minimizar la latencia de respuesta y el consumo de 
+tokens
+ de la API de IA mediante la implementación de estrategias de Caché en Memoria.
+RNF05 (Gestión de Configuración):
+ El proyecto debe gestionarse a través del control de versiones en GitHub, de forma estructurada y con un README metodológicamente documentado.
+c. Historias de Usuario
+Se utilizó el formato ágil y BDD (
+Behavior-Driven Development
+) para definir los Criterios de Aceptación de las historias principales en el 
+Product Backlog
+:
+HU01: Búsqueda exitosa con lenguaje informal
+Como
+ cliente de la ferretería,
+Quiero
+ buscar herramientas describiendo su uso cotidiano,
+Para
+ encontrar el producto que necesito sin saber su nombre técnico exacto.
+Criterio de Aceptación (BDD):
+Dado (Given):
+ Que un usuario desconoce el nombre técnico o SKU de un repuesto.
+Cuando (When):
+ Ingresa una descripción coloquial en el buscador (ej. "la piecita de plástico que une el tubo de agua").
+Entonces (Then):
+ El sistema traduce la intención, consulta la base de datos y muestra de inmediato el código exacto, la fotografía y el estado del 
+stock
+.
+HU02: Manejo automático de búsquedas sin stock exacto
+Como
+ cliente de la ferretería,
+Quiero
+ recibir alternativas si lo que busco no está disponible,
+Para
+ poder resolver mi proyecto de todas formas.
+Criterio de Aceptación (BDD):
+Dado (Given):
+ Que el usuario realiza una búsqueda válida pero no hay 
+stock
+ exacto del repuesto en la base de datos.
+Cuando (When):
+ Se envía la petición y el sistema procesa la información de forma automática enfrentándose a un caso vacío.
+Entonces (Then):
+ El sistema evita arrojar un error, alerta sobre la falta de 
+stock
+ y genera una salida útil mostrando inmediatamente una lista de productos y marcas sustitutas viables.
+d. Gestión del Control de la Calidad del Software 
+(SQA)
+ 
+Para asegurar la máxima calidad del buscador, se aplicó un Aseguramiento Preventivo (SQA) de manera transversal durante todo el ciclo de vida del proyecto, superando la simple validación reactiva de errores.
+Paraguas SQA y Revisiones:
+ Siguiendo los lineamientos teóricos de Pressman, las actividades de calidad actuaron como un "paraguas" protector. Se aplicaron Revisiones Técnicas Formales (FTR) a través del flujo de 
+Pull Requests
+ colaborativos en GitHub. Adicionalmente, se configuró y automatizó el 
+linter
+ del proyecto (
+eslint.config.mjs
+), garantizando el cumplimiento estricto de estándares de código limpio.
+Alineación al Estándar ISO/IEC 25010:
+ El diseño del sistema prioriza atributos críticos del modelo de calidad, específicamente la Adecuación Funcional y la Fiabilidad, implementando mecanismos para evitar caídas del servidor ante consultas ambiguas o complejas por parte del usuario.
+Pruebas de Estrés y Concurrencia:
+ Durante el Sprint 3, se ejecutaron pruebas de carga y rendimiento para validar la latencia del motor de IA. Los resultados evidenciaron un fallo crítico en la arquitectura inicial: procesar inferencias masivas simultáneas provocaba un cuello de botella (Problema N+1) que bloqueaba la API de Gemini. Este descubrimiento técnico fue el gatillo fundamental para refactorizar la lógica de negocio y aplicar la solución de Caché y 
+Fallback
+ (detallada a profundidad en el literal "f").
+e. Diagramas UML
+e1. Diagrama de Casos de Uso
+El sistema contempla dos actores principales (Usuario/Cliente y Administrador) y se apoya en dos sistemas externos (Motor de IA y Base de Datos PostgreSQL). Los casos de uso principales son:
+El usuario interactúa para buscar productos con lenguaje coloquial (UC1) y ver su historial (UC7).
+El sistema interpreta la consulta usando el Motor de IA (UC2), consulta la base de datos (UC3), muestra los resultados relevantes (UC4) y sugiere sustitutos (UC5).
+El administrador puede gestionar el catálogo de productos (UC6).
+e2. Diagrama de Actividades
+ 
+Este diagrama representa el flujo de decisiones paso a paso que ocurre durante una búsqueda. Las rutas principales son:
+Captura e Interpretación:
+ El sistema recibe la consulta y evalúa si necesita enviarla al Motor de IA para traducir el lenguaje impreciso a términos técnicos.
+Consulta y Alternativas:
+ Se ejecuta la búsqueda en PostgreSQL; si no hay coincidencias exactas, se activa automáticamente la ruta para buscar productos sustitutos.
+Respuesta final:
+ El sistema renderiza las tarjetas de los resultados encontrados o, en su defecto, devuelve un mensaje guiado con sugerencias de búsqueda.
+e.3 Diagrama de Clases
+ 
+Este diagrama define la estructura estática y el modelo de datos del proyecto. Sus componentes principales son:
+Entidades Core:
+ Define las clases 
+Producto
+, 
+Categoria
+, 
+Sustituto
+, 
+Usuario
+ y 
+ConsultaBusqueda
+ detallando los atributos exactos de cada una (SKU, nombre, precio, etc.) y sus métodos.
+Relaciones:
+ Establece las multiplicidades y conexiones (por ejemplo, un producto tiene muchos sustitutos, una categoría agrupa varios productos) necesarias para estructurar la base de datos relacional.
+e4. Diagrama de Secuencia 
+Diagrama de Secuencia
+ Este gráfico ilustra el orden cronológico en el que se comunican las distintas capas de la arquitectura. El ciclo de vida de la petición incluye:
+Petición Inicial:
+ El usuario escribe la búsqueda y el Frontend (Next.js) envía la solicitud (POST) al Backend (Node.js).
+Procesamiento:
+ El Backend se comunica con el Motor de IA para procesar el lenguaje natural (NLP) y extraer las entidades técnicas.
+Resolución:
+ Se lanza la consulta de similitud en la base de datos y el Backend empaqueta los productos y sustitutos en un objeto JSON para devolverlos a la interfaz del usuario.
+f. Explicación del uso de Inteligencia Artificial 
+¿Qué IA se utilizó y para qué?
+Se integró el modelo de lenguaje de Google (Gemini) operando en dos frentes estratégicos:
+Co-piloto Técnico (Fase de Desarrollo):
+ Actuó como asistente para la generación del andamiaje de arquitectura limpia (
+scaffolding
+), diagramas Mermaid y documentación metodológica estructurada.
+Traductor de Intenciones (Fase de Producción):
+ Incrustado en el motor de búsqueda de la aplicación (NLP) para interpretar el lenguaje natural del usuario, depurarlo y mapearlo a la terminología técnica del inventario.
+Pruebas SQA y Solución al Problema N+1
+Durante las pruebas de calidad (SQA), el sistema experimentó un error de concurrencia extrema (Problema N+1). La propuesta inicial pretendía inyectar consejos dinámicos generados por la IA en cada tarjeta de producto. Al renderizar un catálogo de 30 productos, se disparaban 30 peticiones simultáneas, lo que agotaba drásticamente el límite de cuota (
+Rate Limit
+) de la API y lanzaba un bloqueo por facturación (
+payment_required
+), causando el colapso de la plataforma.
+Para garantizar la disponibilidad, se rediseñó el flujo integrando un Mecanismo de 
+Fallback
+ (Diccionario Estático Local) en el 
+Frontend
+. La inferencia de la IA fue restringida exclusiva y estrictamente a la evaluación de la búsqueda principal del usuario. Esta decisión técnica anuló la latencia de la interfaz y estabilizó la aplicación.
+Consumo y Optimización de Tokens de IA
+La telemetría del consumo del modelo LLM se monitoriza extrayendo estrictamente los metadatos de respuesta de la API, auditando el volumen de 
+prompt tokens
+ (entrada) y 
+completion tokens
+ (salida). Como estrategia fundamental de optimización y viabilidad económica, la sinergia entre un 
+System Prompt
+ diseñado con máxima concisión y la implementación de una Caché en Memoria en el servidor permite que el índice de consumo de tokens para búsquedas recurrentes se reduzca a cero (0). Una vez que una intención ambigua es traducida exitosamente por primera vez, las iteraciones futuras se resuelven localmente en la RAM, garantizando un sistema escalable y financieramente sostenible
+Prompts utilizados para desarollo del proyecto:
+Para interactuar con la IA no se utilizaron preguntas genéricas, lo cual es la practica facilita la resolución de problemas sin necesidad de muchas ambigüedades 
+Fase de Ingeniería de Requisitos (Sprint 1) :
+“A mí me tocó desarrollar el Proyecto 21: Buscador Inteligente para Ferreterías, basado en esto, ayúdame a redactar dos Historias de Usuario para el Product Backlog. Usa el formato BDD (Given-When-Then). La primera sobre buscar una pieza usando palabras coloquiales (ej. "la piecita que une el tubo") y la segunda sobre sugerir un repuesto sustituto”
+Para el modelado: 
+“
+En base a esta lógica de negocio, genera el código sintáctico en Mermaid para el Diagrama de Clases, estructurando las entidades Producto, Categoría, Sustituto, Usuario y ConsultaBusqueda con sus atributos principales, proyecto num 21”
+Para el prototipo UI: 
+"Para el prototipo visual del Sprint 1, necesito maquetar la interfaz principal usando HTML y Tailwind CSS. El diseño debe estar centrado en la usabilidad, destacando una barra de búsqueda central y minimalista, acompañado de un botón de llamada a la acción que indique “Buscar con IA” " 
+Para la Fase de Arquitectura Backend :
+"He diseñado la arquitectura del backend en Node.js y Express para el buscador de ferretería basándome en los principios de Arquitectura Limpia. Mi decisión  es estructurarlo en cuatro capas principales: Dominio, Casos de Uso (Aplicación), Controladores (Adaptadores) e Infraestructura (PostgreSQL vía Supabase). Genera un esquema en texto plano del árbol de directorios para esta estructura y proporciona únicamente el código del archivo base index.js, la conexión supabase.js y el swagger.yaml para validar que la separación de responsabilidades en la inicialización sea correcta" 
+Prompts utilizados en la Fase de Integración y Producción (Sprints 3 y 4):
+ Para esta fase avanzada, la interacción con la IA dejó de ser para generación de código base y pasó a ser de consultoría arquitectónica y configuración de producción.
+Prompt para resolución del cuello de botella (Problema N+1):
+"Estoy integrando Gemini en mi backend de Node.js para un buscador de ferretería. Al renderizar 30 tarjetas en Next.js, estoy disparando 30 llamadas simultáneas a la API de Gemini para generar tips, lo que agota mi cuota (Rate Limit) y tumba el sistema. Actúa como Arquitecto Cloud y propón una estrategia de mitigación o patrón de diseño en el frontend para evitar este problema de concurrencia N+1 sin dejar la interfaz vacía."
+System Prompt inyectado en el Nodo LLM (n8n): 
+A diferencia de los Sprints anteriores, este prompt no se usó en un chat, sino que se programó directamente en el nodo de n8n para que la IA actúe como el motor del sistema:
+"Eres el motor de búsqueda semántica de una ferretería. El cliente te va a describir un problema o necesidad de forma coloquial. Tu trabajo es extraer la intención y devolver MÁXIMO 3 herramientas o materiales genéricos que solucionen su problema.
+REGLAS DE ORO:
+Devolvé MÁXIMO 3 palabras clave. Ni una más.
+Usá únicamente SUSTANTIVOS genéricos, en singular y minúsculas (nada de marcas ni adjetivos).
+Separá las palabras ÚNICAMENTE con el símbolo 
+|
+ (barra vertical).
+No devuelvas ningún saludo, ni punto final, ni texto extra. Solo las palabras unidas por la barra.
+BÚSQUEDA DEL CLIENTE: 
+{{ $json.body.busqueda }}
+Ejemplos de mapeo semántico:
+"cosas para pintar" -> 
+pintura|rodillo|pincel
+"darle brillo a la madera" -> 
+lija|barniz|cera
+"cortar un caño" -> 
+sierra|amoladora|disco
+"me gotea la bacha de la cocina" -> 
+teflon|sifon|sellador
+"cosa para pulir" -> 
+lija|amoladora|pulidora
+"
+ 
+Skills (Habilidades y herramientas integradas aplicadas):
+ Para la construcción del sistema, se empleó un modelo avanzado de Inteligencia Artificial que funcionó como co-piloto técnico bajo la dirección del desarrollador, operando con las siguientes capacidades:
+Manejo Avanzado de Contexto (Context-Awareness):
+ Capacidad del modelo para retener el historial y las reglas de negocio del proyecto a lo largo de la sesión, garantizando la consistencia evolutiva de los diagramas UML, los requerimientos y el código sin pérdida de información entre los distintos Sprints.
+Desarrollo Guiado por Especificaciones (Prompt Engineering Arquitectónico): 
+Habilidad de razonamiento lógico bajo restricciones estrictas impuestas mediante instrucciones detalladas. Esto obligó a la IA a estructurar el código y el andamiaje del proyecto respetando fielmente las capas de la Arquitectura Limpia.
+Generación de Andamiaje Técnico (Scaffolding):
+ Capacidad de la IA para redactar estructuras de directorios complejas, comandos y archivos de configuración base, agilizando su integración directa en el entorno de desarrollo local.
+Análisis Documental Automatizado (Context-Feeding):
+ Capacidad de procesamiento de lenguaje natural para ingerir, analizar y extraer información clave de los baremos y planificaciones oficiales de la cátedra (archivos 
+.pdf
+ y
+ 
+.docx
+)
+. Esto aseguró que los entregables y las Historias de Usuario estuvieran perfectamente alineados con las exigencias metodológicas del proyecto
+.
+g. Prototipo UI | UX
+Para el desarrollo de la interfaz interactiva, construida en el Sprint 4 con Next.js 16 y Tailwind CSS v4, se aplicaron principios fundamentales de usabilidad orientados a satisfacer directamente los Requerimientos Funcionales (RF01 y RF03):
+Reducción de Carga Cognitiva: 
+El diseño libera al cliente de la necesidad de memorizar catálogos complejos o códigos técnicos (SKU), otorgándole el control total del sistema mediante una barra de búsqueda central y minimalista.
+Consistencia Visual y Prevención de Deuda Técnica: 
+Se aplicó un patrón Mobile-First y un diseño basado en Glassmorphism. Se descartó de manera consciente la implementación de un "Modo Oscuro" apresurado, priorizando una interfaz "Clean UI" en modo claro. Esta decisión arquitectónica temprana previno la sobrecarga del árbol DOM con directivas CSS redundantes.
+Gestión Jerárquica de Assets: 
+Se estructuró un mapeo visual dinámico mediante el directorio estático local (
+/public/productos/
+). La pantalla presenta una jerarquía clara: muestra primero cómo la IA interpretó la búsqueda del usuario, destaca el repuesto principal y colapsa visualmente los productos sustitutos para mantener la interfaz limpia y no saturar la pantalla
+.
+h. Arquitectura General de la Aplicación (Sistema Distribuido)
+El esquema arquitectónico del Buscador Inteligente se erige sobre un modelo Cliente/Servidor distribuido puro de tres capas (3-Tier Architecture). Para asegurar un entorno de desarrollo estandarizado y modular, se empleó IA en la orquestación inicial del repositorio (scaffolding), cimentando el sistema bajo los preceptos de la Arquitectura Limpia para asegurar una segregación total de responsabilidades:
+Capa de Presentación (Frontend):
+ Desplegada en la infraestructura Serverless de Vercel y construida en Next.js. Es la encargada de gestionar el estado asíncrono del lado del cliente (
+use client
+) y la reactividad visual de la interfaz.
+Capa de Lógica / Software Intermedio (Backend):
+ Alojada de manera independiente en la plataforma Render (Node.js/Express), actúa como el middleware depurador. En esta capa se implementó una estrategia de Caché en Memoria (In-Memory Cache) que actúa como un interceptor. Al recibir una búsqueda idéntica a una previa, el sistema omite el flujo hacia la IA y la BD, despachando los resultados directamente desde la memoria RAM y logrando una latencia casi nula.
+Capa de Orquestación e IA:
+ El flujo de automatización (n8n) fue autoalojado de forma privada en una Máquina Virtual (VM) Linux en Microsoft Azure, garantizando un entorno aislado y el control absoluto sobre el tráfico de procesamiento de lenguaje natural hacia la API de Google Gemini
+i. Arquitectura de la Base de Datos
+La estructuración de la información es una etapa fundamental para el desarrollo de soluciones de software robustas y de alta integridad. Para cubrir las exigencias técnicas del buscador, se implementó una base de datos relacional utilizando el motor PostgreSQL, gestionada a través de la plataforma Supabase.
+El diseño arquitectónico del repositorio de datos se fundamenta en los siguientes pilares:
+Esquema de Datos:
+ Se consolidó mediante la especificación rigurosa de las entidades principales (tales como productos, categorías y sustitutos), definiendo sus atributos clave (SKU, denominación técnica, costos) y sus relaciones lógicas.
+Indexación y Búsqueda Avanzada (Full-Text Search):
+ Para superar las limitaciones de las búsquedas literales básicas (operadores 
+LIKE
+ / 
+ILIKE
+), se integró el motor nativo de 
+Full-Text Search
+ de PostgreSQL. La aplicación de la función 
+to_tsquery
+, acompañada de un ajuste semántico en el uso de comodines (
+wildcards
+), permite al sistema tolerar variaciones léxicas, plurales y desinencias gramaticales. Esto garantiza un índice de acierto sumamente alto y mitiga los falsos negativos.
+Integridad y Persistencia:
+ Se asegura la estabilidad y coherencia en la gestión del inventario, lo que garantiza que la visualización de alternativas y repuestos en tiempo real ofrezca una total fiabilidad operativa.
+Manejo de Errores y Casos Vacíos: 
+ La resiliencia operativa y la estabilidad gráfica del sistema se garantizaron mediante un control estricto de excepciones lógicas. En escenarios donde la intención de búsqueda es traducida correctamente pero no existe disponibilidad física en el inventario, se configuró el webhook de n8n y el controlador del backend en Node.js para interceptar de forma segura las respuestas de "0 filas" (
+zero rows
+) provenientes de PostgreSQL. En lugar de desencadenar una excepción no controlada en el servidor o un error HTTP 500 (Internal Server Error), el ecosistema empaqueta un arreglo vacío (
+[]
+) y lo despacha con un código de éxito HTTP 200 OK. Esta técnica de desarrollo defensivo otorga al frontend la capacidad asíncrona de renderizar un estado vacío (
+Empty State
+) amigable, guiando al usuario con sugerencias de búsqueda sin comprometer la ejecución de la aplicación.
+j. Arquitectura de Automatizaciones (Flujos)
+Con el propósito de consolidar la integración del motor de Inteligencia Artificial sin comprometer el rendimiento ni generar acoplamiento en el 
+backend
+ central de Node.js, se concibió una arquitectura de automatización reactiva fundamentada en eventos, orquestada mediante la herramienta n8n.
+Este ecosistema opera bajo un esquema de flujo de trabajo (
+workflow
+) secuencial, integrado por los siguientes nodos de procesamiento técnico:
+Nodo de Entrada (Webhook):
+ Encargado de interceptar como disparador las solicitudes provenientes del servidor, capturando eficazmente las descripciones en lenguaje coloquial proporcionadas por el usuario.
+Nodo de Procesamiento LLM:
+ Establece el vínculo mediante API con el motor de IA, suministrando el 
+System Prompt
+ necesario para transformar las consultas en un objeto JSON estandarizado bajo terminología técnica.
+Nodo de Conexión a Base de Datos:
+ Procesa las equivalencias técnicas obtenidas para ejecutar, de forma automatizada, las sentencias SQL hacia PostgreSQL, verificando la disponibilidad en el inventario real.
+Nodo de Salida y Manejo de Errores:
+ Centraliza y empaqueta la información resultante (SKU, recursos visuales y alternativas sustitutas), canalizándola hacia la capa de presentación. A nivel de estabilidad, implementa una política de manejo seguro para casos vacíos (
+zero rows
+): si un producto no existe en el inventario, el nodo captura la excepción nativa para evitar caídas del servidor (errores HTTP 500) y retorna un arreglo vacío controlado, lo que permite al 
+Frontend
+ renderizar un mensaje amigable al cliente
+Trabajo Futuro (Fase 2 y Roadmap de Negocio)
+ El sistema actual valida con éxito la viabilidad de la tecnología. Para la siguiente iteración, se contempla la siguiente hoja de ruta:
+Migración Vectorial:
+ Integración de la extensión 
+pgvector
+ en la base de datos para habilitar búsquedas por absoluta similitud semántica mediante la indexación de 
+embeddings
+ (vectores matemáticos).
+Venta Cruzada por Proyecto:
+ Lógica algorítmica de negocio que identificará el "proyecto" del usuario. (Ej. Si el sistema deduce que la intención requiere "pintura", el motor sugerirá autónomamente "lijas", "brochas" y "tirro").
+Valor Educativo:
+ Generación dinámica de "Mini-tutoriales de Uso Seguro" asociados al repuesto buscado, agregando valor didáctico a la experiencia del comprador común.
+k. Link del Repositorio 
+El repositorio de este proyecto, gestionado de forma ágil, se encuentra en: 
+https://github.com/Samsr2001/buscador-ferreteria.git
+l. Captures de las pantallas de la aplicación
+ 

@@ -222,5 +222,17 @@ erDiagram
         VARCHAR marca
         TEXT imagen_url
         TIMESTAMP creado_en
+        TIMESTAMP actualizado_en
     }
+
+    SUSTITUTOS {
+        UUID id PK
+        UUID producto_origen_id FK
+        UUID producto_destino_id FK
+        DECIMAL nivel_similitud
+        TEXT razon
+    }
+
+    PRODUCTOS ||--o{ SUSTITUTOS : "tiene sustitutos (origen)"
+    PRODUCTOS ||--o{ SUSTITUTOS : "es sustituto de (destino)"
 ```

@@ -1,12 +1,12 @@
-# 📐 Diagramas UML — Buscador Inteligente para Ferreterías
+# ðŸ“ Diagramas UML â€” Buscador Inteligente para FerreterÃ­as
 
 ## 1. Diagrama de Casos de Uso
 
 ```mermaid
 flowchart LR
     subgraph Actores
-        U["🧑 Usuario / Cliente"]
-        A["🔧 Administrador"]
+        U["ðŸ§‘ Usuario / Cliente"]
+        A["ðŸ”§ Administrador"]
     end
 
     subgraph Sistema["Sistema Buscador Inteligente"]
@@ -15,13 +15,13 @@ flowchart LR
         UC3["Consultar base de datos de productos"]
         UC4["Mostrar resultados relevantes"]
         UC5["Sugerir productos sustitutos"]
-        UC6["Gestionar catálogo de productos"]
-        UC7["Ver historial de búsquedas"]
+        UC6["Gestionar catÃ¡logo de productos"]
+        UC7["Ver historial de bÃºsquedas"]
     end
 
     subgraph Externos
-        IA["🤖 Motor de IA"]
-        BD["🗄️ Base de Datos PostgreSQL"]
+        IA["ðŸ¤– Motor de IA"]
+        BD["ðŸ—„ï¸ Base de Datos PostgreSQL"]
     end
 
     U --> UC1
@@ -39,27 +39,27 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    A([Inicio]) --> B["Usuario escribe búsqueda imprecisa\n(ej: 'tornillo grande para madera')"]
+    A([Inicio]) --> B["Usuario escribe bÃºsqueda imprecisa\n(ej: 'tornillo grande para madera')"]
     B --> C["Frontend captura el texto"]
     C --> D["Backend recibe la consulta"]
-    D --> E{"¿La consulta tiene\ntérminos técnicos?"}
+    D --> E{"Â¿La consulta tiene\ntÃ©rminos tÃ©cnicos?"}
 
-    E -- Sí --> F["Buscar directamente en BD"]
+    E -- SÃ­ --> F["Buscar directamente en BD"]
     E -- No --> G["Enviar consulta al Motor de IA"]
 
-    G --> H["IA interpreta intención\ny extrae entidades"]
-    H --> I["IA genera términos\ntécnicos equivalentes"]
+    G --> H["IA interpreta intenciÃ³n\ny extrae entidades"]
+    H --> I["IA genera tÃ©rminos\ntÃ©cnicos equivalentes"]
     I --> F
 
     F --> J["Ejecutar query en PostgreSQL"]
-    J --> K{"¿Se encontraron\nresultados?"}
+    J --> K{"Â¿Se encontraron\nresultados?"}
 
-    K -- Sí --> L["Ordenar por relevancia"]
+    K -- SÃ­ --> L["Ordenar por relevancia"]
     K -- No --> M["Buscar productos sustitutos"]
-    M --> N{"¿Hay sustitutos\ndisponibles?"}
+    M --> N{"Â¿Hay sustitutos\ndisponibles?"}
 
-    N -- Sí --> L
-    N -- No --> O["Mostrar mensaje:\n'No se encontraron resultados'\n+ sugerencias de búsqueda"]
+    N -- SÃ­ --> L
+    N -- No --> O["Mostrar mensaje:\n'No se encontraron resultados'\n+ sugerencias de bÃºsqueda"]
     O --> P([Fin])
 
     L --> Q["Devolver resultados al Frontend"]
@@ -138,7 +138,7 @@ classDiagram
     Producto "1" --> "*" Sustituto : tiene sustitutos
     Sustituto "*" --> "1" Producto : apunta a
     Categoria "1" --> "*" Producto : contiene
-    Categoria "0..1" --> "*" Categoria : subcategorías
+    Categoria "0..1" --> "*" Categoria : subcategorÃ­as
     ConsultaBusqueda "1" --> "*" ResultadoBusqueda : genera
     ResultadoBusqueda "*" --> "1" Producto : referencia
     Usuario "1" --> "*" ConsultaBusqueda : realiza
@@ -171,9 +171,55 @@ sequenceDiagram
         BD-->>BE: [Sustituto1, Sustituto2]
         BE-->>FE: 200 OK { productos: [...], sustitutos: [...], interpretacion: "clavos de acero para colgar cuadros" }
         FE->>FE: Renderizar tarjetas de productos
-        FE-->>U: Muestra resultados + badge "IA interpretó: clavos de acero para colgar cuadros"
+        FE-->>U: Muestra resultados + badge "IA interpretÃ³: clavos de acero para colgar cuadros"
     else No hay resultados
         BE-->>FE: 200 OK { productos: [], sugerencias: ["Prueba buscar: alcayatas, hembrillas"] }
         FE-->>U: Muestra mensaje sin resultados + sugerencias
     end
+```
+
+## 5. Diagrama de Arquitectura (Componentes)
+
+``mermaid
+flowchart TD
+    subgraph Frontend [Capa de Presentación - Next.js]
+        UI[Interfaz de Usuario / UI]
+    end
+
+    subgraph Backend [Capa de Lógica - Express.js]
+        API[API Gateway /routes/buscar.js]
+        Cache[Caché en Memoria]
+    end
+
+    subgraph Orquestacion [Capa de Orquestación e IA - n8n]
+        WF[Workflow de n8n]
+        Gemini[Google Gemini API]
+    end
+
+    subgraph Datos [Capa de Datos - Supabase]
+        PostgreSQL[(Base de Datos PostgreSQL)]
+    end
+
+    UI <-->|HTTP REST| API
+    API <--> Cache
+    API <-->|Webhook POST| WF
+    WF <-->|Prompting| Gemini
+    WF <-->|PostgREST| PostgreSQL
+``
+
+## 6. Modelo Entidad-Relación (Base de Datos)
+
+```mermaid
+erDiagram
+    PRODUCTOS {
+        UUID id PK
+        VARCHAR sku UK
+        VARCHAR nombre
+        TEXT descripcion
+        DECIMAL precio
+        INTEGER stock
+        VARCHAR marca
+        TEXT imagen_url
+        TIMESTAMP creado_en
+    }
 ```

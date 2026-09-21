@@ -104,7 +104,7 @@ export default function Home() {
 
 
   return (
-    <div className="bg-[#f8fafc] font-sans text-slate-800 min-h-screen flex flex-col">
+    <div className="bg-slate-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-50 via-slate-50 to-slate-100 font-sans text-slate-800 min-h-screen flex flex-col">
       {/* Navigation Bar */}
       <nav className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm fixed top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,7 +134,7 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242l2.879-2.879m0 0L10 10m2 2l-2-2"></path>
           </svg>
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-center mb-6 tracking-tight text-slate-900 drop-shadow-sm">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-center mb-6 tracking-tight text-slate-900 drop-shadow-md">
           Ferre<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">Buscador</span> AI
         </h1>
         <p className="text-lg md:text-2xl text-slate-500 max-w-3xl text-center mb-10 font-light leading-relaxed">
@@ -161,7 +161,7 @@ export default function Home() {
             <button
               onClick={() => buscarProductos(busqueda)}
               disabled={loading || busqueda.trim().length < 2}
-              className="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 text-lg rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex items-center gap-2"
+              className="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-8 text-lg rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-orange-500/40 border border-orange-400/50 flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -231,7 +231,7 @@ export default function Home() {
         {resultados && !loading && (
           <div className="mb-6 pb-4">
             {isCatalogMode ? (
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg border-white/60 border border-slate-200">
                 <div>
                   <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">📦 Catalogo Completo</h2>
                   <p className="text-slate-500 mt-1">Explora el stock por categorias.</p>
@@ -284,7 +284,7 @@ export default function Home() {
 
         <div className="grid gap-6">
           {resultados && resultados.length > 0 && resultados.map((producto, idx) => (
-            <div key={idx} className="bg-white rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-slate-100 flex flex-col md:flex-row group">
+            <div key={idx} className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-md hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-slate-100 flex flex-col md:flex-row group">
               {/* Product Image */}
               <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100 overflow-hidden">
                 {producto.imagen_url ? (
@@ -354,7 +354,7 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {complementarios.map((comp: Producto) => (
-                  <div key={`comp-${comp.id}`} className="bg-white p-4 rounded-2xl flex items-center gap-4 hover:shadow-md transition-shadow border border-emerald-50 cursor-pointer">
+                  <div key={`comp-${comp.id}`} className="bg-white/90 backdrop-blur-sm p-4 rounded-2xl flex items-center gap-4 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-white/60 hover:border-emerald-200 cursor-pointer">
                     <div className="w-16 h-16 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
                       {comp.imagen_url ? (
                         <img src={comp.imagen_url} alt={comp.nombre} className="w-full h-full object-cover" />
@@ -490,3 +490,4 @@ export default function Home() {
     </div>
   );
 }
+

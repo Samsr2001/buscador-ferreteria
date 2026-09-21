@@ -1,12 +1,12 @@
-# ðŸ“ Diagramas UML â€” Buscador Inteligente para FerreterÃ­as
+# 📐 Diagramas UML — Buscador Inteligente para Ferreterías
 
 ## 1. Diagrama de Casos de Uso
 
 ```mermaid
 flowchart LR
     subgraph Actores
-        U["ðŸ§‘ Usuario / Cliente"]
-        A["ðŸ”§ Administrador"]
+        U["🧑 Usuario / Cliente"]
+        A["🔧 Administrador"]
     end
 
     subgraph Sistema["Sistema Buscador Inteligente"]
@@ -15,13 +15,13 @@ flowchart LR
         UC3["Consultar base de datos de productos"]
         UC4["Mostrar resultados relevantes"]
         UC5["Sugerir productos sustitutos"]
-        UC6["Gestionar catÃ¡logo de productos"]
-        UC7["Ver historial de bÃºsquedas"]
+        UC6["Gestionar catálogo de productos"]
+        UC7["Ver historial de búsquedas"]
     end
 
     subgraph Externos
-        IA["ðŸ¤– Motor de IA"]
-        BD["ðŸ—„ï¸ Base de Datos PostgreSQL"]
+        IA["🤖 Motor de IA"]
+        BD["🗄️ Base de Datos PostgreSQL"]
     end
 
     U --> UC1
@@ -39,27 +39,27 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    A([Inicio]) --> B["Usuario escribe bÃºsqueda imprecisa\n(ej: 'tornillo grande para madera')"]
+    A([Inicio]) --> B["Usuario escribe búsqueda imprecisa\n(ej: 'tornillo grande para madera')"]
     B --> C["Frontend captura el texto"]
     C --> D["Backend recibe la consulta"]
-    D --> E{"Â¿La consulta tiene\ntÃ©rminos tÃ©cnicos?"}
+    D --> E{"¿La consulta tiene\ntérminos técnicos?"}
 
-    E -- SÃ­ --> F["Buscar directamente en BD"]
+    E -- Sí --> F["Buscar directamente en BD"]
     E -- No --> G["Enviar consulta al Motor de IA"]
 
-    G --> H["IA interpreta intenciÃ³n\ny extrae entidades"]
-    H --> I["IA genera tÃ©rminos\ntÃ©cnicos equivalentes"]
+    G --> H["IA interpreta intención\ny extrae entidades"]
+    H --> I["IA genera términos\ntécnicos equivalentes"]
     I --> F
 
     F --> J["Ejecutar query en PostgreSQL"]
-    J --> K{"Â¿Se encontraron\nresultados?"}
+    J --> K{"¿Se encontraron\nresultados?"}
 
-    K -- SÃ­ --> L["Ordenar por relevancia"]
+    K -- Sí --> L["Ordenar por relevancia"]
     K -- No --> M["Buscar productos sustitutos"]
-    M --> N{"Â¿Hay sustitutos\ndisponibles?"}
+    M --> N{"¿Hay sustitutos\ndisponibles?"}
 
-    N -- SÃ­ --> L
-    N -- No --> O["Mostrar mensaje:\n'No se encontraron resultados'\n+ sugerencias de bÃºsqueda"]
+    N -- Sí --> L
+    N -- No --> O["Mostrar mensaje:\n'No se encontraron resultados'\n+ sugerencias de búsqueda"]
     O --> P([Fin])
 
     L --> Q["Devolver resultados al Frontend"]
@@ -138,7 +138,7 @@ classDiagram
     Producto "1" --> "*" Sustituto : tiene sustitutos
     Sustituto "*" --> "1" Producto : apunta a
     Categoria "1" --> "*" Producto : contiene
-    Categoria "0..1" --> "*" Categoria : subcategorÃ­as
+    Categoria "0..1" --> "*" Categoria : subcategorías
     ConsultaBusqueda "1" --> "*" ResultadoBusqueda : genera
     ResultadoBusqueda "*" --> "1" Producto : referencia
     Usuario "1" --> "*" ConsultaBusqueda : realiza
@@ -171,16 +171,17 @@ sequenceDiagram
         BD-->>BE: [Sustituto1, Sustituto2]
         BE-->>FE: 200 OK { productos: [...], sustitutos: [...], interpretacion: "clavos de acero para colgar cuadros" }
         FE->>FE: Renderizar tarjetas de productos
-        FE-->>U: Muestra resultados + badge "IA interpretÃ³: clavos de acero para colgar cuadros"
+        FE-->>U: Muestra resultados + badge "IA interpretó: clavos de acero para colgar cuadros"
     else No hay resultados
         BE-->>FE: 200 OK { productos: [], sugerencias: ["Prueba buscar: alcayatas, hembrillas"] }
         FE-->>U: Muestra mensaje sin resultados + sugerencias
     end
 ```
 
+
 ## 5. Diagrama de Arquitectura (Componentes)
 
-``mermaid
+```mermaid
 flowchart TD
     subgraph Frontend [Capa de Presentación - Next.js]
         UI[Interfaz de Usuario / UI]
@@ -205,7 +206,7 @@ flowchart TD
     API <-->|Webhook POST| WF
     WF <-->|Prompting| Gemini
     WF <-->|PostgREST| PostgreSQL
-``
+```
 
 ## 6. Modelo Entidad-Relación (Base de Datos)
 

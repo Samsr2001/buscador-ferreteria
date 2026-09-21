@@ -231,6 +231,7 @@ erDiagram
         UUID producto_destino_id FK
         DECIMAL nivel_similitud
         TEXT razon
+        TIMESTAMP creado_en
     }
 
     PRODUCTOS ||--o{ SUSTITUTOS : "tiene sustitutos (origen)"

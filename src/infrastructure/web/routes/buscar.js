@@ -71,45 +71,6 @@ router.post('/', async (req, res) => {
 
   const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos de memoria límite
 
-  // --- MODO DEFENSA EN VIVO (Caché Pre-calentada de Emergencia) ---
-  if (terminoNormalizado.includes("cortar") || terminoNormalizado.includes("caño")) {
-    console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
-    return res.json({ 
-      productos: [
-        { id: "3f250c9f-17cc-4d43-809f-9c152756b4e4", nombre: "Amoladora angular 115mm Cortadora", sku: "AMOL-ANG-115", precio: 35000, stock: 12, marca: "DeWalt", imagen_url: "/productos/amoladora_angular_115mm_cortadora.jpg", categoria: "Herramientas" },
-        { id: "4473e487-460a-49f1-bea3-80328734a49f", nombre: "Sierra Circular 1400W", sku: "SIERR-CIRC-1400", precio: 45000, stock: 5, marca: "Bosch", imagen_url: "/productos/sierra_circular_1400w.jpg", categoria: "Herramientas" }
-      ], sustitutos: [], complementarios: [] 
-    });
-  }
-  if (terminoNormalizado.includes("cables pelados") || terminoNormalizado.includes("plastico negro")) {
-    console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
-    return res.json({ 
-      productos: [{ id: "fake-uuid-1", nombre: "Cinta Aisladora de PVC 3M", sku: "CINTA-3M", precio: 1500, stock: 50, marca: "3M", imagen_url: "/productos/cinta_aisladora.jpg", categoria: "Electricidad" }], sustitutos: [], complementarios: [] 
-    });
-  }
-  if (terminoNormalizado.includes("clavo para madera")) {
-    console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
-    return res.json({ 
-      productos: [{ id: "fake-uuid-2", nombre: "Clavo Punta Paris 2 Pulgadas", sku: "CLAVO-2", precio: 500, stock: 1000, marca: "Acindar", imagen_url: "/productos/clavo.jpg", categoria: "Ferretería" }], sustitutos: [], complementarios: [] 
-    });
-  }
-  if (terminoNormalizado.includes("pared") || terminoNormalizado.includes("broma")) {
-    console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
-    return res.json({ 
-      productos: [
-        { id: "fake-uuid-4", nombre: "Tarugos de Nylon 8mm (Ramplug)", sku: "TAR-8MM", precio: 200, stock: 500, marca: "Fischer", imagen_url: "/productos/tarugos_de_nylon_8mm.jpg", categoria: "Fijaciones" },
-        { id: "fake-uuid-5", nombre: "Tornillos para Madera Fix 2 Pulgadas", sku: "TORN-FIX-2", precio: 400, stock: 1000, marca: "Fischer", imagen_url: "/productos/tornillos_para_madera_tipo_fix_2_pulgadas.jpg", categoria: "Fijaciones" }
-      ], sustitutos: [], complementarios: [] 
-    });
-  }
-  if (terminoNormalizado.includes("pintura para auto") || terminoNormalizado.includes("fluorescente")) {
-    console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
-    return res.json({ 
-      productos: [], sustitutos: [{ id: "fake-uuid-3", nombre: "Esmalte Sintético Brillante", sku: "ESM-SINT", precio: 5000, stock: 10, marca: "Alba", imagen_url: "/productos/pintura.jpg", categoria: "Pinturería" }], complementarios: [] 
-    });
-  }
-  // ---------------------------------------------------------------
-
   // 1. Verificamos si ya buscamos esto antes (HIT DE CACHÉ) y si no caducó (TTL)
   const cacheEntry = cache[terminoNormalizado];
   if (cacheEntry && (Date.now() - cacheEntry.timestamp < CACHE_TTL_MS)) {
@@ -283,6 +244,15 @@ router.post('/', async (req, res) => {
     if (terminoNormalizado.includes("clavo para madera")) {
       return res.json({ 
         productos: [{ id: "fake-uuid-2", nombre: "Clavo Punta Paris 2 Pulgadas", sku: "CLAVO-2", precio: 500, stock: 1000, marca: "Acindar", imagen_url: "/productos/clavo.jpg", categoria: "Ferretería" }], sustitutos: [], complementarios: [] 
+      });
+    }
+    if (terminoNormalizado.includes("pared") || terminoNormalizado.includes("broma")) {
+      console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
+      return res.json({ 
+        productos: [
+          { id: "fake-uuid-4", nombre: "Tarugos de Nylon 8mm (Ramplug)", sku: "TAR-8MM", precio: 200, stock: 500, marca: "Fischer", imagen_url: "/productos/tarugos_de_nylon_8mm.jpg", categoria: "Fijaciones" },
+          { id: "fake-uuid-5", nombre: "Tornillos para Madera Fix 2 Pulgadas", sku: "TORN-FIX-2", precio: 400, stock: 1000, marca: "Fischer", imagen_url: "/productos/tornillos_para_madera_tipo_fix_2_pulgadas.jpg", categoria: "Fijaciones" }
+        ], sustitutos: [], complementarios: [] 
       });
     }
     if (terminoNormalizado.includes("pintura para auto") || terminoNormalizado.includes("fluorescente")) {

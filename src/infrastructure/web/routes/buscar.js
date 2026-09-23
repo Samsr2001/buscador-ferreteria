@@ -96,7 +96,10 @@ router.post('/', async (req, res) => {
   if (terminoNormalizado.includes("pared") || terminoNormalizado.includes("broma")) {
     console.log(`[API] ⚡ MODO DEFENSA: Retornando datos al instante para "${terminoNormalizado}"`);
     return res.json({ 
-      productos: [{ id: "fake-uuid-4", nombre: "Tornillo Tirafondo 1/4 con Ramplug", sku: "TIRA-14", precio: 200, stock: 500, marca: "Fischer", imagen_url: "/productos/tirafondo.jpg", categoria: "Fijaciones" }], sustitutos: [], complementarios: [] 
+      productos: [
+        { id: "fake-uuid-4", nombre: "Tarugos de Nylon 8mm (Ramplug)", sku: "TAR-8MM", precio: 200, stock: 500, marca: "Fischer", imagen_url: "/productos/tarugos_de_nylon_8mm.jpg", categoria: "Fijaciones" },
+        { id: "fake-uuid-5", nombre: "Tornillos para Madera Fix 2 Pulgadas", sku: "TORN-FIX-2", precio: 400, stock: 1000, marca: "Fischer", imagen_url: "/productos/tornillos_para_madera_tipo_fix_2_pulgadas.jpg", categoria: "Fijaciones" }
+      ], sustitutos: [], complementarios: [] 
     });
   }
   if (terminoNormalizado.includes("pintura para auto") || terminoNormalizado.includes("fluorescente")) {

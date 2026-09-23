@@ -238,12 +238,12 @@ router.post('/', async (req, res) => {
     }
     if (terminoNormalizado.includes("cables pelados") || terminoNormalizado.includes("plastico negro")) {
       return res.json({ 
-        productos: [{ id: "fake-uuid-1", nombre: "Cinta Aisladora de PVC 3M", sku: "CINTA-3M", precio: 1500, stock: 50, marca: "3M", imagen_url: "/productos/cinta_aisladora.jpg", categoria: "Electricidad" }], sustitutos: [], complementarios: [] 
+        productos: [{ id: "fake-uuid-1", nombre: "Cinta Aisladora Negra", sku: "CINTA-NEG", precio: 1500, stock: 50, marca: "3M", imagen_url: "/productos/cinta_aisladora_negra.jpg", categoria: "Electricidad" }], sustitutos: [], complementarios: [] 
       });
     }
     if (terminoNormalizado.includes("clavo para madera")) {
       return res.json({ 
-        productos: [{ id: "fake-uuid-2", nombre: "Clavo Punta Paris 2 Pulgadas", sku: "CLAVO-2", precio: 500, stock: 1000, marca: "Acindar", imagen_url: "/productos/clavo.jpg", categoria: "Ferretería" }], sustitutos: [], complementarios: [] 
+        productos: [{ id: "fake-uuid-2", nombre: "Clavos de Acero 2 Pulgadas", sku: "CLAVO-2", precio: 500, stock: 1000, marca: "Acindar", imagen_url: "/productos/clavos_de_acero_2_pulgadas.jpg", categoria: "Ferretería" }], sustitutos: [], complementarios: [] 
       });
     }
     if (terminoNormalizado.includes("pared") || terminoNormalizado.includes("broma")) {
@@ -257,7 +257,7 @@ router.post('/', async (req, res) => {
     }
     if (terminoNormalizado.includes("pintura para auto") || terminoNormalizado.includes("fluorescente")) {
       return res.json({ 
-        productos: [], sustitutos: [{ id: "fake-uuid-3", nombre: "Esmalte Sintético Brillante", sku: "ESM-SINT", precio: 5000, stock: 10, marca: "Alba", imagen_url: "/productos/pintura.jpg", categoria: "Pinturería" }], complementarios: [] 
+        productos: [], sustitutos: [{ id: "fake-uuid-3", nombre: "Pintura Latex Interior 20L", sku: "PINT-LATEX", precio: 45000, stock: 10, marca: "Alba", imagen_url: "/productos/pintura_latex_interior_20l.jpg", categoria: "Pinturería" }], complementarios: [] 
       });
     }
 

@@ -12,8 +12,16 @@ app.use(cors());
 app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 15,
+  message: { error: 'Demasiadas solicitudes, por favor intente de nuevo más tarde.' },
+});
+
 const buscarRoutes = require('./infrastructure/web/routes/buscar');
-app.use('/api/buscar', buscarRoutes);
+app.use('/api/buscar', apiLimiter, buscarRoutes);
 
 app.get('/', (req, res) => res.send('API Buscador Ferretería en línea'));
 app.get('/api/productos', async (req, res) => {

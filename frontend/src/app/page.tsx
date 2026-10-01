@@ -28,27 +28,108 @@ export default function Home() {
     { id: 'Tornilleria', nombre: 'Tornillería' }
   ];
 
-  // Fetch tutorial para los resultados principales
+  // Fetch tutorial para todos los productos en pantalla
   useEffect(() => {
-    if (resultados && resultados.length > 0) {
-      resultados.forEach(async (producto) => {
+    const todosLosProductos = [
+      ...(resultados || []),
+      ...(sustitutos || []),
+      ...(complementarios || [])
+    ];
+    
+    if (todosLosProductos.length > 0) {
+      todosLosProductos.forEach(async (producto) => {
         if (!tips[producto.id]) {
           try {
-            const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/buscar').replace('/api/buscar', '');
+            const baseUrl = '';
             const res = await fetch(`${baseUrl}/api/buscar/tutorial?producto=${encodeURIComponent(producto.nombre)}`);
             if (res.ok) {
               const data = await res.json();
               if (data.tip) {
                 setTips(prev => ({ ...prev, [producto.id]: data.tip }));
               }
+            } else {
+              setTips(prev => ({ ...prev, [producto.id]: 'Tip: Usa herramientas adecuadas y equipo de protección.' }));
             }
           } catch (e) {
-            console.error("Error fetching tutorial", e);
+            setTips(prev => ({ ...prev, [producto.id]: 'Tip: Usa herramientas adecuadas y equipo de protección.' }));
           }
         }
       });
     }
-  }, [resultados]);
+  }, [resultados, sustitutos, complementarios]);
+
+  const [isListening, setIsListening] = useState(false);
+
+  const iniciarDictado = () => {
+    // @ts-ignore
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Tu navegador no soporta búsqueda por voz.");
+      return;
+    }
+    // @ts-ignore
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setBusqueda(transcript);
+      buscarProductos(transcript);
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
+    recognition.start();
+  };
+
+  const handleSubirFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      setLoading(true);
+      setError(null);
+      setResultados(null);
+      setSustitutos(null);
+      setComplementarios(null);
+      setIsCatalogMode(false);
+      setBusqueda('Analizando imagen con IA...');
+      
+      try {
+        const apiUrl = '/api/buscar';
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64String }),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Error al analizar la imagen');
+        }
+
+        const data = await res.json();
+        setResultados(data.productos || []);
+        setSustitutos(data.sustitutos || []);
+        setComplementarios(data.complementarios || []);
+        
+        if (data.inferredQuery) {
+          setBusqueda(data.inferredQuery);
+        } else {
+          setBusqueda('✨ ¡Búsqueda visual completada!');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+        setBusqueda('');
+      } finally {
+        setLoading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const buscarProductos = async (termino: string) => {
     const trimmed = termino.trim();
@@ -62,7 +143,7 @@ export default function Home() {
     setIsCatalogMode(false);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/buscar';
+      const apiUrl = '/api/buscar';
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,7 +174,7 @@ export default function Home() {
     setIsCatalogMode(true);
     setFiltroCategoria(categoria);
     try {
-      const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/buscar').replace('/api/buscar', '');
+      const baseUrl = '';
       const catParam = categoria !== 'Todas' ? '?categoria=' + encodeURIComponent(categoria) : '';
       const res = await fetch(baseUrl + '/api/productos' + catParam);
       if (!res.ok) throw new Error('Error al cargar catalogo');
@@ -158,12 +239,29 @@ export default function Home() {
             </div>
             <input
               type="text"
-              className="block w-full pl-16 pr-40 py-5 text-xl bg-transparent border-0 rounded-2xl text-slate-800 dark:text-zinc-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all"
+              className="block w-full pl-16 pr-[220px] py-5 text-xl bg-transparent border-0 rounded-2xl text-slate-800 dark:text-zinc-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all"
               placeholder="Ej: la piecita de metal para ajustar tubos..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && buscarProductos(busqueda)}
             />
+            
+            {/* Multimodal Buttons */}
+            <div className="absolute right-36 top-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 items-center">
+              <button 
+                onClick={iniciarDictado} 
+                className={`p-2.5 rounded-xl transition-all ${isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 hover:text-orange-500'}`}
+                title="Buscar por voz"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+              </button>
+              
+              <label className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 hover:text-orange-500 transition-all cursor-pointer" title="Subir foto">
+                <input type="file" hidden accept="image/*" onChange={handleSubirFoto} />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              </label>
+            </div>
+
             <button
               onClick={() => buscarProductos(busqueda)}
               disabled={loading || busqueda.trim().length < 2}
@@ -294,7 +392,7 @@ export default function Home() {
               {/* Product Image */}
               <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 dark:bg-zinc-800 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100 overflow-hidden">
                 {producto.imagen_url ? (
-                  <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
+                  <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition-transform duration-500" />
                 ) : (
                   <div className="text-slate-300 dark:text-zinc-600 flex flex-col items-center">
                     <svg className="w-20 h-20 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,11 +437,11 @@ export default function Home() {
                 
                 {/* Tip del Experto / Mini-tutorial */}
                 {tips[producto.id] && (
-                  <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-4 flex gap-3">
+                  <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 flex gap-3">
                     <span className="text-xl">👷‍♂️</span>
                     <div>
-                      <span className="font-bold text-amber-900 text-sm block mb-1">Tip de uso / Seguridad:</span>
-                      <p className="text-amber-800 text-sm leading-relaxed">{tips[producto.id]}</p>
+                      <span className="font-bold text-amber-900 dark:text-amber-400 text-sm block mb-1">Tip de uso / Seguridad:</span>
+                      <p className="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">{tips[producto.id]}</p>
                     </div>
                   </div>
                 )}
@@ -431,6 +529,17 @@ export default function Home() {
                     </div>
                     
                     <p className="text-slate-600 dark:text-zinc-300 leading-relaxed text-base">{producto.descripcion}</p>
+                    
+                    {/* Tip del Experto / Mini-tutorial */}
+                    {tips[producto.id] && (
+                      <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 flex gap-3">
+                        <span className="text-xl">👷‍♂️</span>
+                        <div>
+                          <span className="font-bold text-amber-900 dark:text-amber-400 text-sm block mb-1">Tip de uso / Seguridad:</span>
+                          <p className="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">{tips[producto.id]}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

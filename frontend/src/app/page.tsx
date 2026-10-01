@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [busqueda, setBusqueda] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Detectar preferencia del sistema al inicio
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDarkMode(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (isDarkMode) document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');

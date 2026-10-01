@@ -27,7 +27,7 @@ async function getEmbedding(text: string) {
 
 async function describeImage(base64Image: string, mimeType: string) {
   const geminiApiKey = process.env.GEMINI_API_KEY || '';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey.trim()}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiApiKey.trim()}`;
   
   const response = await fetch(url, {
     method: 'POST',
@@ -130,10 +130,6 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error(`[API] ❌ Error:`, error.message);
-    return NextResponse.json({
-      productos: [{ id: "fake-1", nombre: "Ocurrió un error con la IA", descripcion: String(error.message).substring(0, 200), precio: 0, stock: 0, marca: "Error", categoria: "Error" }],
-      sustitutos: [],
-      complementarios: []
-    });
+    return NextResponse.json({ error: String(error.message) }, { status: 500 });
   }
 }

@@ -25,7 +25,7 @@ async function getEmbedding(text: string) {
   return data.embedding.values;
 }
 
-async function describeImage(base64Image: string) {
+async function describeImage(base64Image: string, mimeType: string) {
   const geminiApiKey = process.env.GEMINI_API_KEY || '';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey.trim()}`;
   
@@ -36,14 +36,15 @@ async function describeImage(base64Image: string) {
       contents: [{
         parts: [
           { text: "Identifica esta herramienta o repuesto de ferretería. Dime SOLO el nombre genérico en 2 a 4 palabras, sin punto final ni explicaciones." },
-          { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+          { inline_data: { mime_type: mimeType, data: base64Image } }
         ]
       }]
     })
   });
 
   if (!response.ok) {
-    throw new Error(`Error en Gemini Vision: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Error en Gemini Vision: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
@@ -56,8 +57,12 @@ export async function POST(req: Request) {
     
     if (image) {
       console.log(`[API] 📸 Procesando imagen multimodal...`);
+      // Extraer mime type
+      const match = image.match(/^data:(image\/\w+);base64,/);
+      const mimeType = match ? match[1] : 'image/jpeg';
       const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      query = await describeImage(base64Data);
+      
+      query = await describeImage(base64Data, mimeType);
       console.log(`[API] 📸 IA detectó: "${query}"`);
     }
     
@@ -126,7 +131,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error(`[API] ❌ Error:`, error.message);
     return NextResponse.json({
-      productos: [{ id: "fake-1", nombre: "Ocurrió un error con la IA", descripcion: "Intenta de nuevo.", precio: 0, stock: 0, marca: "Error", categoria: "Error" }],
+      productos: [{ id: "fake-1", nombre: "Ocurrió un error con la IA", descripcion: String(error.message).substring(0, 200), precio: 0, stock: 0, marca: "Error", categoria: "Error" }],
       sustitutos: [],
       complementarios: []
     });

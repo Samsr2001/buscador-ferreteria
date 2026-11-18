@@ -1,0 +1,35 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Runs every 3 days at 12:00 UTC to prevent 7-day inactivity pause
+    - cron: '0 12 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "Error: SUPABASE_URL or SUPABASE_KEY secrets are not configured."
+            exit 1
+          fi
+
+          echo "Sending keep-alive request to Supabase..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "${SUPABASE_URL}/rest/v1/productos?select=id&limit=1")
+
+          echo "Response HTTP status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Supabase project is active and healthy."
+          else
+            echo "Warning: Received unexpected HTTP status $HTTP_STATUS"
+            exit 1
+          fi

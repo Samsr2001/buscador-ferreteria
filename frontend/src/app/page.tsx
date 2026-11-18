@@ -91,52 +91,85 @@ export default function Home() {
     recognition.start();
   };
 
-  const handleSubirFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const comprimirImagen = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const maxDim = 1024;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          return reject(new Error('Canvas no soportado'));
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.onerror = (err) => {
+        URL.revokeObjectURL(objectUrl);
+        reject(err);
+      };
+      img.src = objectUrl;
+    });
+  };
+
+  const handleSubirFoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result as string;
-      setLoading(true);
-      setError(null);
-      setResultados(null);
-      setSustitutos(null);
-      setComplementarios(null);
-      setIsCatalogMode(false);
-      setBusqueda('Analizando imagen con IA...');
-      
-      try {
-        const apiUrl = '/api/buscar';
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64String }),
-        });
+    e.target.value = '';
+    setLoading(true);
+    setError(null);
+    setResultados(null);
+    setSustitutos(null);
+    setComplementarios(null);
+    setIsCatalogMode(false);
+    setBusqueda('Optimizando y analizando imagen con IA...');
+    
+    try {
+      const base64String = await comprimirImagen(file);
+      const apiUrl = '/api/buscar';
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64String }),
+      });
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || 'Error al analizar la imagen');
-        }
-
-        const data = await res.json();
-        setResultados(data.productos || []);
-        setSustitutos(data.sustitutos || []);
-        setComplementarios(data.complementarios || []);
-        
-        if (data.inferredQuery) {
-          setBusqueda(data.inferredQuery);
-        } else {
-          setBusqueda('✨ ¡Búsqueda visual completada!');
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
-        setBusqueda('');
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Error al analizar la imagen');
       }
-    };
-    reader.readAsDataURL(file);
+
+      const data = await res.json();
+      setResultados(data.productos || []);
+      setSustitutos(data.sustitutos || []);
+      setComplementarios(data.complementarios || []);
+      
+      if (data.inferredQuery) {
+        setBusqueda(data.inferredQuery);
+      } else {
+        setBusqueda('✨ ¡Búsqueda visual completada!');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      setBusqueda('');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const buscarProductos = async (termino: string) => {

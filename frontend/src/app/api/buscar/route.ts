@@ -27,28 +27,43 @@ async function getEmbedding(text: string) {
 
 async function describeImage(base64Image: string, mimeType: string) {
   const geminiApiKey = process.env.GEMINI_API_KEY || '';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiApiKey.trim()}`;
-  
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { text: "Identifica esta herramienta o repuesto de ferretería. Dime SOLO el nombre genérico en 2 a 4 palabras, sin punto final ni explicaciones." },
-          { inline_data: { mime_type: mimeType, data: base64Image } }
-        ]
-      }]
-    })
-  });
+  const candidateModels = ['gemini-flash-lite-latest', 'gemini-3-flash-preview'];
+  let lastError: Error | null = null;
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Error en Gemini Vision: ${response.statusText} - ${errorText}`);
+  for (const model of candidateModels) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey.trim()}`;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: "Identifica esta herramienta o repuesto de ferretería. Dime SOLO el nombre genérico en 2 a 4 palabras, sin punto final ni explicaciones." },
+              { inline_data: { mime_type: mimeType, data: base64Image } }
+            ]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Model ${model} returned ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (text) {
+        return text;
+      }
+    } catch (err: any) {
+      console.warn(`[API] ⚠️ Error con ${model}:`, err.message);
+      lastError = err;
+    }
   }
 
-  const data = await response.json();
-  return data.candidates[0].content.parts[0].text.trim();
+  throw new Error(`Error en Gemini Vision: ${lastError?.message || 'No se pudo identificar la imagen'}`);
 }
 
 export async function POST(req: Request) {

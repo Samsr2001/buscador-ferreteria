@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 export default function Home() {
   const [busqueda, setBusqueda] = useState('');
@@ -27,6 +27,43 @@ export default function Home() {
   const [showSucursales, setShowSucursales] = useState(false);
   const [filtroCategoria, setFiltroCategoria] = useState('Todas');
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
+
+  // Filtros dinámicos en frontend (Fase 3)
+  const [filtroMarca, setFiltroMarca] = useState<string>('Todas');
+  const [ordenPrecio, setOrdenPrecio] = useState<'ninguno' | 'asc' | 'desc'>('ninguno');
+  const [soloConStock, setSoloConStock] = useState<boolean>(false);
+
+  const marcasDisponibles = useMemo(() => {
+    if (!resultados) return [];
+    const marcas = new Set<string>();
+    resultados.forEach((p) => {
+      if (p.marca && p.marca.trim() && p.marca.trim().toLowerCase() !== 'genérica') {
+        marcas.add(p.marca.trim());
+      }
+    });
+    return Array.from(marcas);
+  }, [resultados]);
+
+  const productosFiltrados = useMemo(() => {
+    if (!resultados) return [];
+    let list = [...resultados];
+
+    if (filtroMarca !== 'Todas') {
+      list = list.filter((p) => (p.marca || 'Genérica').toLowerCase() === filtroMarca.toLowerCase());
+    }
+
+    if (soloConStock) {
+      list = list.filter((p) => (p.stock || 0) > 0);
+    }
+
+    if (ordenPrecio === 'asc') {
+      list.sort((a, b) => Number(a.precio) - Number(b.precio));
+    } else if (ordenPrecio === 'desc') {
+      list.sort((a, b) => Number(b.precio) - Number(a.precio));
+    }
+
+    return list;
+  }, [resultados, filtroMarca, soloConStock, ordenPrecio]);
 
   const categoriasMenu = [
     { id: 'Todas', nombre: 'Todas las Categorías' },
@@ -138,6 +175,9 @@ export default function Home() {
     setSustitutos(null);
     setComplementarios(null);
     setIsCatalogMode(false);
+    setFiltroMarca('Todas');
+    setOrdenPrecio('ninguno');
+    setSoloConStock(false);
     setBusqueda('Optimizando y analizando imagen con IA...');
     
     try {
@@ -182,6 +222,9 @@ export default function Home() {
     setSustitutos(null);
     setComplementarios(null);
     setIsCatalogMode(false);
+    setFiltroMarca('Todas');
+    setOrdenPrecio('ninguno');
+    setSoloConStock(false);
 
     try {
       const apiUrl = '/api/buscar';
@@ -214,6 +257,9 @@ export default function Home() {
     setBusqueda('');
     setIsCatalogMode(true);
     setFiltroCategoria(categoria);
+    setFiltroMarca('Todas');
+    setOrdenPrecio('ninguno');
+    setSoloConStock(false);
     try {
       const baseUrl = '';
       const catParam = categoria !== 'Todas' ? '?categoria=' + encodeURIComponent(categoria) : '';
@@ -427,68 +473,182 @@ export default function Home() {
           </div>
         )}
 
-        <div className="grid gap-6">
-          {resultados && resultados.length > 0 && resultados.map((producto, idx) => (
-            <div key={idx} className="bg-white dark:bg-zinc-900/80 backdrop-blur-xl rounded-3xl shadow-md hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-slate-100 flex flex-col md:flex-row group">
-              {/* Product Image */}
-              <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 dark:bg-zinc-800 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100 overflow-hidden">
-                {producto.imagen_url ? (
-                  <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition-transform duration-500" />
-                ) : (
-                  <div className="text-slate-300 dark:text-zinc-600 flex flex-col items-center">
-                    <svg className="w-20 h-20 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    <span className="text-xs font-medium uppercase tracking-wider">Sin foto</span>
-                  </div>
-                )}
+        {/* Barra de Filtros Dinámicos */}
+        {resultados && resultados.length > 0 && !loading && (
+          <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm mb-6 flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-zinc-800">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎯</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200 text-sm sm:text-base">
+                  Filtros dinámicos
+                </span>
+                <span className="text-xs bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 font-bold px-2.5 py-0.5 rounded-full">
+                  {productosFiltrados.length} de {resultados.length} productos
+                </span>
               </div>
-              
-              {/* Product Details */}
-              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
-                <div className="flex justify-between items-start mb-3">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-zinc-100 leading-tight">{producto.nombre}</h2>
-                  <span className="text-2xl font-black text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-4 py-1.5 rounded-xl border border-orange-100 dark:border-orange-500/30 shadow-sm whitespace-nowrap ml-4">${producto.precio}</span>
+
+              {(filtroMarca !== 'Todas' || soloConStock || ordenPrecio !== 'ninguno') && (
+                <button
+                  onClick={() => {
+                    setFiltroMarca('Todas');
+                    setSoloConStock(false);
+                    setOrdenPrecio('ninguno');
+                  }}
+                  className="text-xs text-orange-600 hover:text-orange-700 dark:text-orange-400 font-semibold flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+                >
+                  <span>Limpiar filtros</span>
+                  <span>✕</span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              {/* Filtro por Marca */}
+              {marcasDisponibles.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-xs font-medium text-slate-500 dark:text-zinc-400 mr-1">Marca:</span>
+                  <button
+                    onClick={() => setFiltroMarca('Todas')}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                      filtroMarca === 'Todas'
+                        ? 'bg-orange-500 text-white shadow-sm'
+                        : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                    }`}
+                  >
+                    Todas
+                  </button>
+                  {marcasDisponibles.map((marca) => (
+                    <button
+                      key={marca}
+                      onClick={() => setFiltroMarca(marca.toLowerCase() === filtroMarca.toLowerCase() ? 'Todas' : marca)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                        filtroMarca.toLowerCase() === marca.toLowerCase()
+                          ? 'bg-orange-500 text-white shadow-sm'
+                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                      }`}
+                    >
+                      {marca}
+                    </button>
+                  ))}
                 </div>
-                
-                <div className="flex flex-wrap gap-2 mb-5">
-                  <span className="bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 dark:text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-200">SKU: {producto.sku}</span>
-                  <span className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider border border-indigo-100">Marca: {producto.marca || 'Genérica'}</span>
-                  
-                  {/* Stock Dinámico Premium */}
-                  {producto.stock > 20 ? (
-                    <span className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-emerald-200 shadow-sm">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      Stock Ideal: {producto.stock}
-                    </span>
-                  ) : producto.stock > 0 ? (
-                    <span className="bg-amber-50 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-amber-200 animate-pulse shadow-sm">
-                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                      ¡Últimas {producto.stock}!
-                    </span>
+              )}
+
+              {/* Orden por Precio */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">Precio:</span>
+                <select
+                  value={ordenPrecio}
+                  onChange={(e) => setOrdenPrecio(e.target.value as 'ninguno' | 'asc' | 'desc')}
+                  className="bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+                >
+                  <option value="ninguno">Predeterminado</option>
+                  <option value="asc">Menor precio ($ → $$)</option>
+                  <option value="desc">Mayor precio ($$ → $)</option>
+                </select>
+              </div>
+
+              {/* Filtro de Stock */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={soloConStock}
+                  onChange={(e) => setSoloConStock(e.target.checked)}
+                  className="w-4 h-4 text-orange-600 rounded border-slate-300 dark:border-zinc-700 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
+                />
+                <span className="text-xs font-medium text-slate-700 dark:text-zinc-300">
+                  Solo con stock
+                </span>
+              </label>
+            </div>
+          </div>
+        )}
+
+        <div className="grid gap-6">
+          {productosFiltrados && productosFiltrados.length > 0 ? (
+            productosFiltrados.map((producto, idx) => (
+              <div key={idx} className="bg-white dark:bg-zinc-900/80 backdrop-blur-xl rounded-3xl shadow-md hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-slate-100 flex flex-col md:flex-row group">
+                {/* Product Image */}
+                <div className="md:w-1/3 lg:w-1/4 h-64 md:h-auto bg-slate-50 dark:bg-zinc-800 flex-shrink-0 flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-100 overflow-hidden">
+                  {producto.imagen_url ? (
+                    <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition-transform duration-500" />
                   ) : (
-                    <span className="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-rose-200 shadow-sm">
-                      <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                      Agotado
-                    </span>
+                    <div className="text-slate-300 dark:text-zinc-600 flex flex-col items-center">
+                      <svg className="w-20 h-20 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                      </svg>
+                      <span className="text-xs font-medium uppercase tracking-wider">Sin foto</span>
+                    </div>
                   )}
                 </div>
                 
-                <p className="text-slate-600 dark:text-zinc-300 leading-relaxed text-base">{producto.descripcion}</p>
-                
-                {/* Tip del Experto / Mini-tutorial */}
-                {tips[producto.id] && (
-                  <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 flex gap-3">
-                    <span className="text-xl">👷‍♂️</span>
-                    <div>
-                      <span className="font-bold text-amber-900 dark:text-amber-400 text-sm block mb-1">Tip de uso / Seguridad:</span>
-                      <p className="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">{tips[producto.id]}</p>
-                    </div>
+                {/* Product Details */}
+                <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                  <div className="flex justify-between items-start mb-3">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-zinc-100 leading-tight">{producto.nombre}</h2>
+                    <span className="text-2xl font-black text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-4 py-1.5 rounded-xl border border-orange-100 dark:border-orange-500/30 shadow-sm whitespace-nowrap ml-4">${producto.precio}</span>
                   </div>
-                )}
+                  
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    <span className="bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 dark:text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-200">SKU: {producto.sku}</span>
+                    <span className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider border border-indigo-100">Marca: {producto.marca || 'Genérica'}</span>
+                    
+                    {/* Stock Dinámico Premium */}
+                    {producto.stock > 20 ? (
+                      <span className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-emerald-200 shadow-sm">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Stock Ideal: {producto.stock}
+                      </span>
+                    ) : producto.stock > 0 ? (
+                      <span className="bg-amber-50 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-amber-200 animate-pulse shadow-sm">
+                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                        ¡Últimas {producto.stock}!
+                      </span>
+                    ) : (
+                      <span className="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1.5 border border-rose-200 shadow-sm">
+                        <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                        Agotado
+                      </span>
+                    )}
+                  </div>
+                  
+                  <p className="text-slate-600 dark:text-zinc-300 leading-relaxed text-base">{producto.descripcion}</p>
+                  
+                  {/* Tip del Experto / Mini-tutorial */}
+                  {tips[producto.id] && (
+                    <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 flex gap-3">
+                      <span className="text-xl">👷‍♂️</span>
+                      <div>
+                        <span className="font-bold text-amber-900 dark:text-amber-400 text-sm block mb-1">Tip de uso / Seguridad:</span>
+                        <p className="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">{tips[producto.id]}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            resultados && resultados.length > 0 && (
+              <div className="text-center py-12 bg-white dark:bg-zinc-900 rounded-3xl border border-slate-100 dark:border-zinc-800 p-8 shadow-sm">
+                <span className="text-4xl mb-3 block">🔍</span>
+                <h3 className="text-xl font-bold text-slate-800 dark:text-zinc-100 mb-2">
+                  No hay productos con los filtros seleccionados
+                </h3>
+                <p className="text-slate-500 dark:text-zinc-400 text-sm mb-4">
+                  Probá seleccionando otra marca o desactivando el filtro de stock.
+                </p>
+                <button
+                  onClick={() => {
+                    setFiltroMarca('Todas');
+                    setSoloConStock(false);
+                    setOrdenPrecio('ninguno');
+                  }}
+                  className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer shadow-sm"
+                >
+                  Restablecer filtros
+                </button>
+              </div>
+            )
+          )}
 
           {/* Productos Complementarios (Venta Cruzada) */}
           {complementarios && complementarios.length > 0 && !loading && (
